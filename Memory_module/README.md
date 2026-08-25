@@ -1,4 +1,4 @@
-# Memory Module 🧠
+# Memory Module 
 
 An **independent** memory subsystem for higher-level agents (chatbot, research
 agent, orchestrator, …). It owns its state, its storage, and its API — the
