@@ -65,6 +65,19 @@ class ShortTermMemory:
             return history[-limit:]
         return history
 
+    def add_transcript(self, session_id: str, messages: List[Dict[str, Any]]) -> None:
+        """Bulk-ingest a chat transcript: [{"role": "user", "content": "..."}, ...]."""
+        session = self._get_or_create_session(session_id)
+        for message in messages:
+            role = str(message.get("role", "user"))
+            content = str(message.get("content", ""))
+            if content:
+                session.messages.append(ChatMessage(role=role, content=content))
+
+    def get_session_ids(self) -> List[str]:
+        """All live session ids currently held in short-term memory."""
+        return list(self._sessions.keys())
+
     def update_active_plan(
         self,
         session_id: str,

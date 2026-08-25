@@ -1,0 +1,9 @@
+# The official Pinecone SDK (package renamed from "pinecone-client" to "pinecone")
+pinecone>=6.0
+python-dotenv>=1.0
+
+# Optional — only needed when EMBEDDING_BACKEND=openai (bring-your-own embeddings)
+# openai>=1.30
+
+# Optional — only needed when TRIAGE_LLM=true (LLM fact extraction)
+# anthropic>=0.40
