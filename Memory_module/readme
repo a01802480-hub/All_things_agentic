@@ -1,0 +1,84 @@
+# Agent Memory Subsystem 🧠
+
+This directory handles the state, context, and persistence of the proactive agent. It is divided into three distinct modules to separate the ephemeral conversation buffer from long-term vector storage, managed by a central orchestration layer.
+
+## Architecture Overview
+
+```text
+memory/
+├── README.md
+├── short_memory.py   # Ephemeral conversation state (Sliding windows)
+├── long_memory.py    # Persistent semantic memory (Pinecone)
+└── memory_logic.py   # Orchestration and extraction logic (The API)
+
+
+1. short_memory.py (The Working Buffer)
+Purpose: Manages the immediate conversational context and the active session state. This is fast, volatile memory that gets wiped or summarized when it gets too long.
+
+Key Responsibilities:
+
+Storing the last N messages of the conversation.
+
+Enforcing token limits (sliding window or truncation).
+
+Tracking the current active plan or step the user is on.
+
+Expected Functions/Classes:
+
+class SessionBuffer:
+
+add_message(session_id, role, content) -> Appends to the buffer.
+
+get_recent_history(session_id, k=10) -> Retrieves the window for the LLM.
+
+clear_session(session_id) -> Wipes the buffer.
+
+Dependencies: typing, standard in-memory structures (dict), or redis if scaling.
+
+2. long_memory.py (The Vector Vault)
+Purpose: Handles all communication with the vector database. It strictly deals with embeddings, semantic search, and persistent storage.
+
+Key Responsibilities:
+
+Initializing the Pinecone client and connecting to the index.
+
+Generating embeddings from text.
+
+Upserting facts into the correct user namespaces.
+
+Querying for semantically relevant past notes.
+
+Expected Functions/Classes:
+
+class VectorStore:
+
+_get_embedding(text) -> Calls the embedding API.
+
+save_note(user_id, topic, content) -> Upserts to Pinecone.
+
+retrieve_context(user_id, current_query, top_k) -> Returns matching notes.
+
+Dependencies: pinecone, embedding library (e.g., openai, langchain-huggingface).
+
+3. memory_logic.py (The Orchestrator)
+Purpose: This is the "Brain" of the memory system. It acts as the bridge between short_memory.py, long_memory.py, and the main FastAPI routing endpoints. The rest of the backend should only import from this file.
+
+Key Responsibilities:
+
+Context Assembly: Combining retrieved notes from long_memory with the recent history from short_memory into a single prompt block.
+
+The Triage Pipeline: Running the background logic (or small LLM call) to decide if a new user message contains a permanent fact worth extracting to long_memory.
+
+API Interface: Providing clean, high-level methods for main.py.
+
+Expected Functions/Classes:
+
+class MemoryManager: (Imports SessionBuffer and VectorStore)
+
+process_user_input(session_id, user_id, message) -> Triggers triage and updates short-term.
+
+build_agent_prompt(session_id, user_id, current_query) -> Assembles the context payload for the main ReAct loop.
+
+handle_explicit_feedback(user_id, feedback_data) -> Bypasses triage and forces a save to Pinecone.
+
+Dependencies: short_memory, long_memory, LLM client for extraction logic.
