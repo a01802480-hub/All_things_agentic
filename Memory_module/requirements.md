@@ -1,50 +1,29 @@
-# Memory Module — Requirements (Spec)
+# Agent Memory Core 🧠
 
-What this module must do. Implementation and usage docs: see `README.md`.
+This directory contains the completely decoupled, agnostic memory subsystem for the agent architecture. It provides isolated short-term conversational buffers and long-term persistent semantic storage (Pinecone). 
 
-## Functional requirements
+It is designed as a **Microservice Module**. It has no knowledge of downstream LLMs, prompts, or specific agent logic (e.g., Chatbot vs. Research Agent). It strictly handles data ingestion, state management, and context retrieval.
 
-1. **Independence** — self-contained, importable package; zero imports from,
-   and zero shared state with, the chatbot/research/orchestrator processes.
-   The parent process only imports `MemoryManager` (via `Memory_module`).
+---
 
-2. **Vector data → Pinecone** — embed text and upsert it to a Pinecone index,
-   one namespace per user. Default: Pinecone-hosted inference
-   (`llama-text-embed-v2`, single API key). Optional: BYO OpenAI embeddings.
+## 1. What It Does
 
-3. **Callable from a higher process** — the parent sends user data and chat
-   transcripts in (`process_user_input`, `add_transcript`) and receives memory
-   back out (`build_agent_prompt`, `get_user_profile`, `retrieve_context`).
+The subsystem is split into three layers:
 
-4. **Long-term preferences in Pinecone** — `save_user_preference` persists
-   durable facts with semantic retrievability (`retrieve_context`).
+*   **`short_memory.py`**: Manages volatile, ephemeral state using standard Python structures. It automatically enforces a sliding window (default: 20 messages) to prevent token overflow. State is isolated by `session_id`.
+*   **`long_memory.py`**: Handles all vector database operations. It embeds text and upserts it into Pinecone, partitioned by `user_id` (namespace) to guarantee data privacy.
+*   **`memory_logic.py`**: The API surface (the `MemoryCore` class). Other modules **only** interact with this file. It orchestrates the reading and writing between short-term and long-term storage.
 
-5. **Compact local long-term store** — preferences and important user data are
-   also mirrored to a minimal-space per-user JSON file
-   (`data/long_term_memory/<user_id>.json`, whitespace-stripped). This is the
-   fast/offline canonical copy; Pinecone is the search layer over it.
+---
 
-6. **Short-term = everything else** — the transcript window and plan state live
-   in RAM only (sliding window, default 20 messages). Messages without durable
-   semantic meaning are never persisted.
+## 2. What It Needs (Dependencies & Setup)
 
-7. **Triage** — decide automatically whether a message holds a durable fact
-   (heuristic rules by default; optional LLM extraction with
-   `TRIAGE_LLM=true`).
+### System Requirements
+*   Python 3.8+
+*   Single-worker execution for local RAM state: Run FastAPI with `uvicorn main:app --reload` (do not use `--workers` unless backed by Redis).
 
-8. **Docs** — `README.md` covers install, configuration, API reference, and
-   integration into a higher intelligence.
-
-## Non-goals
-
-- No user authentication / multi-tenancy enforcement (namespaces + file names
-  already isolate users; the parent owns identity).
-- No long-term transcript archiving (only durable facts are persisted).
-- No replacement for the parent's own LLM loop — this module only feeds it
-  context.
-
-## Acceptance checks
-
-- `python -m Memory_module.demo` runs end to end against Pinecone.
-- `MemoryManager()` raises a clear error without `PINECONE_API_KEY`.
-- Pinecone failure degrades to the JSON mirror (warning, no crash).
+### Package Dependencies
+Ensure these are in your `requirements.txt`:
+```txt
+pinecone-client
+# Your embedding library of choice, e.g., openai or sentence-transformers
