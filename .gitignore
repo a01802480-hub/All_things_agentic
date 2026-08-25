@@ -1,0 +1,15 @@
+# Secrets / local configuration
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local memory data (per-user JSON mirrors)
+Memory_module/data/
+data/
+
+# OS noise
+Thumbs.db
+Desktop.ini
