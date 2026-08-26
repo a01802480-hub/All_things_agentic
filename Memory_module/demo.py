@@ -42,9 +42,9 @@ def main() -> None:
     print("\n[build_agent_prompt]")
     print(manager.build_agent_prompt(session_id, user_id, "Can you recommend dinner ideas?"))
 
-    # Cleanup (uncomment to wipe the demo data):
-    # manager.delete_user_memory(user_id)
-    # manager.clear_session(session_id)
+    #Cleanup (uncomment to wipe the demo data):
+    manager.delete_user_memory(user_id)
+    manager.clear_session(session_id)
 
 
 if __name__ == "__main__":

@@ -25,5 +25,7 @@ The subsystem is split into three layers:
 ### Package Dependencies
 Ensure these are in your `requirements.txt`:
 ```txt
-pinecone-client
+pinecone>=6.0
+python-dotenv>=1.0
+typing-extensions>=4.6
 # Your embedding library of choice, e.g., openai or sentence-transformers
