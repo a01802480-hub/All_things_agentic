@@ -1,8 +1,6 @@
-# All_things_agentic
-Repository for the Hackaton "All things agentic" Sponsored by Google
-
 # All Things Agentic: Modular Multi-Agent Framework
 
+Repository for the Hackaton "All things agentic" Sponsored by Google
 This repository contains the architecture, starter code, and evaluation framework developed for the **All Things Agentic Hackathon**. It features multi-phase challenge setups designed to test and select the final three-person hackathon team.
 
 ## Architecture Principles
