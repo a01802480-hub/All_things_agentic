@@ -1,191 +1,284 @@
+import asyncio
+import logging
+import json
 import os
 import sys
-import json
-import logging
-import uuid
-import asyncio
-import hashlib
 import importlib.util
-import importlib.machinery
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import List, Dict, Any, Optional, Callable
 from pydantic import BaseModel, Field
-from time import timezone
 
+# NEW IMPORTS FOR REAL LLM INTEGRATION
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("TheArchitect")
 
-GENERATED_MODULES_DIR = Path(__file__).parent / "generated_modules"
+# Resolve absolute paths based on the current file location
+# This assumes Architect_logic.py is inside 'The architect' folder
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR) # Go up one level to 'All_things_agentic'
+
+# The folder where the CodeAgent will save new tools
+GENERATED_MODULES_DIR = os.path.join(CURRENT_DIR, "generated_modules")
 os.makedirs(GENERATED_MODULES_DIR, exist_ok=True)
 
-class ToolsRegistry:
-    def __init__(self):
-        self.tools = {}
-        
-    def register_dynamical(self, name: str, tool: Any) -> None:
-        self.tools[name] = tool
-        logger.info(f"Dynamically registered tool: {name}")
-    def register_tool(self, name: str, tool: Any) -> None:
-        self.tools[name] = tool
-        logger.info(f"Registered tool: {name}")
-    def get_tool(self, name: str) -> Optional[Any]:
-        return self.tools.get(name)
-    def list_tools(self) -> List[str]:
-        return list(self.tools.keys()) 
-class tool_creation_request(BaseModel):
-    tool_name: str
-    tool_code: str
-    async def handle_generation_request(self) -> None:
-        task_description = f"Create a new tool named {self.tool_name} with the provided code."
-        logger.info(f"Handling tool creation request: {task_description}")
-    async def create_tool(self) -> None:
-        tool_path = GENERATED_MODULES_DIR / f"{self.tool_name}.py"
-        with open(tool_path, "w") as f:
-            f.write(self.tool_code)
-        logger.info(f"Tool {self.tool_name} created at {tool_path}")
-        # Dynamically import the newly created tool
-        spec = importlib.util.spec_from_file_location(self.tool_name, tool_path)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[self.tool_name] = module
-        spec.loader.exec_module(module)
-        logger.info(f"Tool {self.tool_name} imported successfully")
-    
+# Add project root to sys.path so we can import from sibling directories if needed
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
-class subtask(BaseModel):
+class SubTask(BaseModel):
     task_id: str
     description: str
     required_agent: str
-    is_tool_creation: bool = False # NEW: Flag to tell orchestrator to inject this
-    tool_name_to_create: Optional[str] = None
     dependencies: List[str] = Field(default_factory=list)
     status: str = "PENDING"
     result: Optional[str] = None
-class exexutor_state(BaseModel):
-    main_task: str
-    tasks: List[subtask] = Field(default_factory=list)
-    completed_tasks: List[subtask] = Field(default_factory=list)
-    failed_tasks: List[subtask] = Field(default_factory=list)
-    Global_status: str = "PENDING"
-class base_worker(BaseModel):
-    def __init__(self, name: str, description: str):
-        self.name = name
-        self.description = description
-        self.subtasks: List[subtask] = []
-    async def execute_subtask(self, subtask: subtask) -> None:
-        logger.info(f"[{self.name}] Started task {task.task_id}")
-        # Simulate some work being done
-        await asyncio.sleep(1)
-        subtask.status = "completed"
-        subtask.updated_at = datetime.now(timezone.utc).isoformat()
-        logger.info(f"[{self.name}] completed subtask {subtask.name}")
+    error: Optional[str] = None
+
+class ExecutionState(BaseModel):
+    main_goal: str
+    tasks: Dict[str, SubTask] = Field(default_factory=dict)
+    global_status: str = "PLANNING"
+    shared_context: Dict[str, Any] = Field(default_factory=dict)
+
+class DynamicToolRegistry:
+    """
+    Scans the entire project tree for directories ending with '_module',
+    loads them dynamically using importlib, and registers their capabilities.
+    """
+    def __init__(self):
+        self.workers: Dict[str, Callable] = {}
+        self.discover_all_modules()
+
+    def discover_all_modules(self):
+        logger.info(f"[Registry] Commencing deep scan of project root: {PROJECT_ROOT}")
         
-        if self.subtasks:
-            next_subtask = self.subtasks.pop(0)
-            await self.execute_subtask(next_subtask)
-        if self.name in self.workers:
-            return state.tasks.pop(0)
-        return subtask
+        # 1. Scan the root for directories ending in '_module' (e.g., research_module)
+        for item in os.listdir(PROJECT_ROOT):
+            item_path = os.path.join(PROJECT_ROOT, item)
+            if os.path.isdir(item_path) and item.endswith("_module"):
+                self._scan_directory_for_py_files(item_path)
+
+        # 2. Scan the local generated_modules directory
+        self._scan_directory_for_py_files(GENERATED_MODULES_DIR)
+
+    def _scan_directory_for_py_files(self, directory: str):
+        logger.info(f"[Registry] Scanning directory: {directory}")
+        if not os.path.exists(directory):
+            return
+
+        for filename in os.listdir(directory):
+            # We are looking for python files that represent the core logic of that module.
+            # Avoid tests, inits, and the Architect itself.
+            if filename.endswith(".py") and filename != "__init__.py" and not filename.startswith("test_"):
+                module_name = filename[:-3] # Remove .py
+                filepath = os.path.join(directory, filename)
+                self.load_and_register(module_name, filepath)
+
+    def load_and_register(self, module_name: str, filepath: str):
+        try:
+            # Using importlib to dynamically load the file without hardcoding imports
+            spec = importlib.util.spec_from_file_location(module_name, filepath)
+            if spec and spec.loader:
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                
+                # Convention 1: The module has a standard 'execute' async function
+                if hasattr(module, 'execute'):
+                    self.workers[module_name] = module.execute
+                    logger.info(f"[Registry] Registered standard function module: {module_name} from {filepath}")
+                
+                # Convention 2: The module exposes an agent instance (e.g., research_agent)
+                elif hasattr(module, f"{module_name.split('_')[0]}_agent"):
+                    agent_instance = getattr(module, f"{module_name.split('_')[0]}_agent")
+                    if hasattr(agent_instance, 'execute'):
+                        self.workers[module_name] = agent_instance.execute
+                        logger.info(f"[Registry] Registered agent class module: {module_name} from {filepath}")
+                
+                # Convention 3: For things like memory_logic which might not have an 'execute'
+                # but might have specific manager classes.
+                else:
+                    logger.debug(f"[Registry] {filename} loaded, but missing an 'execute' callable. Skipping direct agent registration.")
+        except Exception as e:
+            logger.error(f"[Registry] Failed to load {filepath}: {e}")
+
+    def get_worker(self, name: str) -> Optional[Callable]:
+        # Fuzzy match to allow the LLM to request "research" instead of "research_module"
+        for registered_name, worker in self.workers.items():
+            if name.lower() in registered_name.lower():
+                return worker
+        return None
+
+class Architect:
+    def __init__(self):
+        self.registry = DynamicToolRegistry()
+        self.user_id = "default_user_1"
         
+        # Load environment variables from both root and local folders
+        load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+        load_dotenv(os.path.join(CURRENT_DIR, ".env"))
+        load_dotenv()
         
-class architect:
-    def __init__(self, workers: list[base_worker] ):
-        self.workers = {w.name: w for w in workers}    
-    def get_worker_resume(self) -> str:
-        return "\n".join([f"{w.name}: {w.description}" for w in self.workers.values()])
-    async def planner_llm(self, task_description: str) -> List[subtask]:
-        # Placeholder for LLM planning logic
-        # In a real implementation, this would call an LLM to generate subtasks based on the task description
-        logger.info(f"Planning subtasks for task: {task_description}")
-        return [subtask(name=f"Subtask {i+1}", description=f"Description for subtask {i+1}") for i in range(3)]
-    async def assign_task(self, worker_name: str, task: subtask) -> None:
-        if worker_name in self.workers:
-            worker = self.workers[worker_name]
-            worker.subtasks.append(task)
-            logger.info(f"Assigned task {task.name} to worker {worker_name}")
-            await worker.execute_subtask(task)
-        else:
-            logger.error(f"Worker {worker_name} not found")
-    #def assign_task(self, worker_name: str, task: subtask) -> None:
-            #if worker_name in self.workers:
-             #   worker = self.workers[worker_name]
-              #  worker.subtasks.append(task)
-               # logger.info(f"Assigned task {task.name} to worker {worker_name}")
-            #else:
-             #   logger.error(f"Worker {worker_name} not found")
-    async def plan_workflow(self, task_description: str) -> None:
-        logger.info(f"Planning workflow for task: {task_description}")
-        promt=f"""
-        Goal: {task_description}
-        Available workers: {self.get_worker_resume()}
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            logger.error("[Architect] CRITICAL: GEMINI_API_KEY not found! Check your .env file.")
+            raise ValueError("Cannot initialize Orchestrator without a GEMINI_API_KEY.")
+            
+        self.ai_client = genai.Client(api_key=api_key)
+
+    def _get_available_tools_string(self) -> str:
+        if not self.registry.workers:
+            return "No modules discovered."
+        return ", ".join(self.registry.workers.keys())
+
+    async def _generate_execution_plan(self, goal: str) -> str:
         """
-        plan_json = await self.planner_llm(promt) 
-        tasks_data=json.loads(plan_json)
-        for task_data in tasks_data:
-           state.tasks[task_data['task_id']] = subtask(**task_data)
-           state.global_status = "EXECUTING"
-    async def execute_workflow(self, state: exexutor_state) -> None:
-        logger.info("Executing workflow")
-        while state.global_status == "EXECUTING" and state.tasks:
-            ready_tasks = [task for task in state.tasks.values() if all(dep in [t.task_id for t in state.completed_tasks] for dep in task.dependencies)]
-           
+        Uses Groq to analyze the goal and generate a JSON task graph (DAG).
+        It is fully aware of what tools/modules are currently available on disk.
+        """
+        available_tools = self._get_available_tools_string()
+        logger.info(f"[Architect] Planning phase. Providing Groq with tools: {available_tools}")
+        
+        prompt = f"""
+        You are the Master Orchestrator Agent. Your job is to break the user's goal into a logical sequence of sub-tasks.
+        
+        Available backend worker modules: [{available_tools}]
+        
+        User Goal & Context:
+        {goal}
+        
+        CRITICAL RULES:
+        1. Only assign tasks to the exact module names listed above.
+        2. If a required capability is completely missing, do your best to use existing modules or create a generic task.
+        3. Output MUST be a valid JSON object containing a "tasks" array.
+        
+        Output format:
+        {{
+          "tasks": [
+            {{
+              "task_id": "t1", 
+              "description": "Clear instruction for the worker", 
+              "required_agent": "module_name", 
+              "dependencies": []
+            }}
+          ]
+        }}
+        """
+        
+        # Call Gemini asynchronously, enforcing JSON mode
+        response = await self.ai_client.aio.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                temperature=0.1
+            )
+        )
+        
+        logger.info("[Architect] LLM generated the execution plan.")
+        return response.text
+
+    async def execute_workflow(self, state: ExecutionState):
+        logger.info("--- ARCHITECT EXECUTING WORKFLOW ---")
+        
+        while state.global_status == "EXECUTING":
+            ready_tasks = []
             for task_id, task in state.tasks.items():
                 if task.status == "PENDING":
                     deps_met = all(state.tasks[dep].status == "COMPLETED" for dep in task.dependencies)
                     if deps_met:
                         ready_tasks.append(task)
-            if not_ready_tasks:
+            
+            if not ready_tasks:
                 pending = [t for t in state.tasks.values() if t.status in ["PENDING", "IN_PROGRESS"]]
                 if not pending:
                     state.global_status = "COMPLETED"
-                    logger.info("All tasks completed.")
                 else:
-                        # If tasks are pending but none are ready, it means dependencies failed or deadlock.
-                    logger.error("Deadlock or dependency failure detected!")
                     state.global_status = "FAILED"
                 break
+
             for t in ready_tasks:
                 t.status = "IN_PROGRESS"
+
+            # Parallel Execution using dynamically discovered callables
             async_coroutines = []
             for t in ready_tasks:
-                # Assign tasks to workers based on some logic (e.g., round-robin, load balancing)
-                worker_name = self.select_worker_for_task(t)
-                if not worker_name:
-                    logger.error(f"No available worker for task {t.task_id}")
+                worker_func = self.registry.get_worker(t.required_agent)
+                if not worker_func:
+                    logger.error(f"[Architect] Requested module '{t.required_agent}' not found in Registry.")
                     t.status = "FAILED"
-                    state.failed_tasks.append(t)
                     continue
-                context = {dep: state.tasks[dep].result for dep in t.dependencies}
-                async_coroutines.append(self._run_single_task(worker, t, context))
+                
+                # Context passing
+                context = {"memory": state.shared_context}
+                for dep in t.dependencies:
+                     context[dep] = state.tasks[dep].result
+                     
+                async_coroutines.append(self._run_task_safely(worker_func, t, context))
+            
             await asyncio.gather(*async_coroutines)
 
-    async def _run_single_task(self, worker: base_worker, task: subtask, context: Dict[str, Any]) -> None:
+    async def _run_task_safely(self, worker_func: Callable, task: SubTask, context: dict):
         try:
-            result = await self.execute_task(worker.name, task, context)
+            logger.info(f"[Architect] Firing dynamic module for task: {task.task_id}")
+            # Handling both async and sync execute functions gracefully
+            if asyncio.iscoroutinefunction(worker_func):
+                result = await worker_func(query=task.description, context=context)
+            else:
+                # If a dynamically written module happens to be synchronous
+                result = await asyncio.to_thread(worker_func, task.description, context)
+            
             task.result = result
             task.status = "COMPLETED"
-            logger.info(f"Task {task.task_id} completed successfully.")
         except Exception as e:
             task.error = str(e)
             task.status = "FAILED"
-            logger.error(f"Task {task.task_id} failed with error: {e}")
-async def main():
-    # Example usage
-    workers = [
-        base_worker(name="Worker1", description="Handles data processing tasks"),
-        base_worker(name="Worker2", description="Handles API calls and external integrations"),
-    ]
-    arch = architect(workers=workers)
-    goal = "Develop a new feature for the application"
-    await arch.plan_workflow(goal)
-     
-    print("\n" + "="*40)
-    print("FINAL EXECUTION REPORT")
-    print("="*40)
-    for task_id, task in final_state.tasks.items():
-        print(f"[{task.status}] {task_id} ({task.required_agent}): {task.description}")
-        if task.status == "COMPLETED":
-            print(f"    Result: {task.result}")
+            logger.error(f"[Architect] Module failed on {task.task_id}: {e}")
+
+    async def process_chat(self, user_chat: str):
+        logger.info(f"\n--- ARCHITECT INITIATED ---")
+        logger.info(f"Goal: '{user_chat}'")
+
+        # 1. Attempt to load memory preferences if the Memory_module is available
+        historical_preferences = {}
+        try:
+            # Because we added PROJECT_ROOT to sys.path, we can import it like this
+            from Memory_module.memory_logic import MemoryManager # Adjust import based on your exact class names
+            historical_preferences = MemoryManager().get_user_profile(self.user_id)
+            logger.info(f"[Architect] Loaded historical preferences: {historical_preferences}")
+        except ImportError as e:
+            logger.warning(f"[Architect] Memory logic not directly importable: {e}. Proceeding without memory context.")
+
+        state = ExecutionState(main_goal=user_chat, shared_context={"preferences": historical_preferences})
+
+        # 2. Plan based on discovered tools (Now using the real LLM!)
+        try:
+            plan_json = await self._generate_execution_plan(state.main_goal)
+            
+            # Parse the JSON and build the DAG
+            plan_data = json.loads(plan_json)
+            tasks_list = plan_data.get("tasks", [])
+            for t in tasks_list:
+                state.tasks[t["task_id"]] = SubTask(**t)
+            state.global_status = "EXECUTING"
+            
+        except Exception as e:
+            logger.error(f"[Architect] Planning failed! Error: {e}")
+            state.global_status = "FAILED"
+            return state
+
+        # 3. Execute
+        await self.execute_workflow(state)
+        
+        logger.info(f"--- ARCHITECT WORKFLOW COMPLETE ---")
+        for task_id, task in state.tasks.items():
+            if task.status == "COMPLETED":
+                logger.info(f"Task {task_id} Output: {task.result}")
+        return state
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    architect = Architect()
+    user_prompt = "Find out everything about quantum error correction and summarize it."
+    asyncio.run(architect.process_chat(user_prompt))
