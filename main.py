@@ -34,7 +34,7 @@ async def main_loop():
     It takes user input from the terminal and feeds it into the ChatAnalyzer.
     """
     print("\n" + "="*60)
-    print("🚀 ALL THINGS AGENTIC - ARCHITECT TERMINAL BOOTING 🚀")
+    print(" ALL THINGS AGENTIC - ARCHITECT TERMINAL BOOTING ")
     print("="*60)
     
     logger.info("Initializing system components...")
@@ -70,7 +70,7 @@ async def main_loop():
             
             # 3. Output the final system state/results to the terminal
             print("\n" + "="*60)
-            print("🏆 WORKFLOW COMPLETED 🏆")
+            print(" WORKFLOW COMPLETED ")
             print("="*60)
             if final_state and hasattr(final_state, 'tasks'):
                 for task_id, task in final_state.tasks.items():
