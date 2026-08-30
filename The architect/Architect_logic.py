@@ -12,8 +12,14 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+# ---------------------------------------------------------
+# 1. LOGGING CONFIGURATION & SILENCING SDK WARNINGS
+# ---------------------------------------------------------
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("TheArchitect")
+
+# Mute the annoying Automatic Function Calling (AFC) warning from the GenAI SDK
+logging.getLogger("google_genai.models").setLevel(logging.ERROR)
 
 # Resolve absolute paths based on the current file location
 # This assumes Architect_logic.py is inside 'The architect' folder
@@ -45,7 +51,7 @@ class ExecutionState(BaseModel):
 
 class DynamicToolRegistry:
     """
-    Scans the entire project tree for directories ending with '_module',
+    Scans the entire project tree recursively for directories ending with '_module',
     loads them dynamically using importlib, and registers their capabilities.
     """
     def __init__(self):
@@ -53,16 +59,21 @@ class DynamicToolRegistry:
         self.discover_all_modules()
 
     def discover_all_modules(self):
-        logger.info(f"[Registry] Commencing deep scan of project root: {PROJECT_ROOT}")
+        logger.info(f"[Registry] Commencing deep recursive scan of project root: {PROJECT_ROOT}")
         
-        # 1. Scan the root for directories ending in '_module' (e.g., research_module)
-        for item in os.listdir(PROJECT_ROOT):
-            item_path = os.path.join(PROJECT_ROOT, item)
-            if os.path.isdir(item_path) and item.endswith("_module"):
-                self._scan_directory_for_py_files(item_path)
-
-        # 2. Scan the local generated_modules directory
-        self._scan_directory_for_py_files(GENERATED_MODULES_DIR)
+        # We use os.walk to recursively search all folders and subfolders
+        for root, dirs, files in os.walk(PROJECT_ROOT):
+            # Skip virtual environments and hidden git folders to save time
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'tests']]
+            
+            # If the current folder ends with '_module', scan it for tools
+            folder_name = os.path.basename(root)
+            if folder_name.endswith("_module"):
+                self._scan_directory_for_py_files(root)
+                
+        # Also explicitly scan the local generated_modules directory just in case
+        if os.path.exists(GENERATED_MODULES_DIR):
+             self._scan_directory_for_py_files(GENERATED_MODULES_DIR)
 
     def _scan_directory_for_py_files(self, directory: str):
         logger.info(f"[Registry] Scanning directory: {directory}")
@@ -78,6 +89,13 @@ class DynamicToolRegistry:
                 self.load_and_register(module_name, filepath)
 
     def load_and_register(self, module_name: str, filepath: str):
+        # We need to temporarily add the directory of the file we are loading to sys.path
+        # This prevents "attempted relative import with no known parent package" errors
+        # when the module tries to import other files in its own folder.
+        module_dir = os.path.dirname(filepath)
+        if module_dir not in sys.path:
+            sys.path.insert(0, module_dir)
+            
         try:
             # Using importlib to dynamically load the file without hardcoding imports
             spec = importlib.util.spec_from_file_location(module_name, filepath)
@@ -101,8 +119,18 @@ class DynamicToolRegistry:
                 # but might have specific manager classes.
                 else:
                     logger.debug(f"[Registry] {filename} loaded, but missing an 'execute' callable. Skipping direct agent registration.")
+        except IndentationError as ie:
+            logger.error(f"[Registry] ⚠️ Syntax Error (Unexpected Indent) in {filepath}: {ie}")
+            logger.error(f"[Registry] Action Required: Open {filename} and fix the spaces/tabs on line {ie.lineno}.")
+        except ImportError as ie:
+            logger.error(f"[Registry] ⚠️ Missing Library for {filepath}: {ie}")
+            logger.error(f"[Registry] Action Required: Install the missing package using pip.")
         except Exception as e:
-            logger.error(f"[Registry] Failed to load {filepath}: {e}")
+            logger.error(f"[Registry] ⚠️ Failed to load {filepath}: {e}")
+        finally:
+            # Clean up the path addition to avoid polluting the global namespace
+            if module_dir in sys.path:
+                sys.path.remove(module_dir)
 
     def get_worker(self, name: str) -> Optional[Callable]:
         # Fuzzy match to allow the LLM to request "research" instead of "research_module"
@@ -131,15 +159,16 @@ class Architect:
     def _get_available_tools_string(self) -> str:
         if not self.registry.workers:
             return "No modules discovered."
-        return ", ".join(self.registry.workers.keys())
+        # Clearly format the tools for the LLM
+        return ", ".join([f"'{name}'" for name in self.registry.workers.keys()])
 
     async def _generate_execution_plan(self, goal: str) -> str:
         """
-        Uses Groq to analyze the goal and generate a JSON task graph (DAG).
+        Uses Gemini to analyze the goal and generate a JSON task graph (DAG).
         It is fully aware of what tools/modules are currently available on disk.
         """
         available_tools = self._get_available_tools_string()
-        logger.info(f"[Architect] Planning phase. Providing Groq with tools: {available_tools}")
+        logger.info(f"[Architect] Planning phase. Providing LLM with tools: [{available_tools}]")
         
         prompt = f"""
         You are the Master Orchestrator Agent. Your job is to break the user's goal into a logical sequence of sub-tasks.
@@ -150,9 +179,8 @@ class Architect:
         {goal}
         
         CRITICAL RULES:
-        1. Only assign tasks to the exact module names listed above.
-        2. If a required capability is completely missing, do your best to use existing modules or create a generic task.
-        3. Output MUST be a valid JSON object containing a "tasks" array.
+        1. Only assign tasks to the exact module names listed above. YOU MUST NOT MAKE UP TOOL NAMES (like 'general_worker' or 'search'). If a tool is missing, use the closest available one from the list.
+        2. Output MUST be a valid JSON object containing a "tasks" array.
         
         Output format:
         {{
@@ -160,7 +188,7 @@ class Architect:
             {{
               "task_id": "t1", 
               "description": "Clear instruction for the worker", 
-              "required_agent": "module_name", 
+              "required_agent": "exact_module_name_from_list", 
               "dependencies": []
             }}
           ]
@@ -209,6 +237,8 @@ class Architect:
                 if not worker_func:
                     logger.error(f"[Architect] Requested module '{t.required_agent}' not found in Registry.")
                     t.status = "FAILED"
+                    # Pass the error string forward so the frontend UI can see it
+                    t.error = f"Agent '{t.required_agent}' is missing or failed to load. Ensure the file is in a '_module' folder."
                     continue
                 
                 # Context passing

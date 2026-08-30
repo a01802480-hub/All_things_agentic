@@ -34,7 +34,7 @@ async def main_loop():
     It takes user input from the terminal and feeds it into the ChatAnalyzer.
     """
     print("\n" + "="*60)
-    print(" ALL THINGS AGENTIC - THE ARCHITECT TERMINAL BOOTING ")
+    print("🚀 ALL THINGS AGENTIC - ARCHITECT TERMINAL BOOTING 🚀")
     print("="*60)
     
     logger.info("Initializing system components...")
@@ -43,7 +43,7 @@ async def main_loop():
     analyzer = ChatAnalyzer()
     
     # Hardcoded user_id for the hackathon demo (can be dynamic if you add a login module)
-    current_user_id = "User_12345"
+    current_user_id = "USER_12345"
     
     print("\n" + "="*60)
     print("✅ SYSTEM READY")
@@ -57,7 +57,7 @@ async def main_loop():
             user_input = input(f"\n[{current_user_id}] >> ")
             
             if user_input.lower().strip() in ['exit', 'quit']:
-                print("\nShutting down The Architect. Goodbye!")
+                print("\nShutting down The Arcitect. Goodbye!")
                 break
                 
             if not user_input.strip():
