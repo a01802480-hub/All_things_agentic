@@ -1,76 +1,150 @@
+import logging
+import os
 import json
+import re
+from typing import Dict, Any, List
 
+try:
+    from google import genai
+    from google.genai import types
+    from dotenv import load_dotenv
+    HAS_GENAI = True
+except ImportError:
+    HAS_GENAI = False
 
-class CodeGenerator:
+logger = logging.getLogger("ProgrammingModule")
+load_dotenv()
+
+class ModuleSpec:
     """
-    Generates Python source code from a ModuleSpec.
+    Represents the technical specification of a module before code generation.
+    Adapted from the user's original OOP design.
     """
+    def __init__(self, module_name: str, purpose: str, inputs: List[str], outputs: List[str], logic_steps: List[str]):
+        # Ensure the module name is snake_case and ends with _module for the registry
+        self.module_name = module_name.lower().replace(" ", "_")
+        if not self.module_name.endswith("_module"):
+            self.module_name += "_module"
+            
+        self.purpose = purpose
+        self.inputs = inputs
+        self.outputs = outputs
+        self.logic_steps = logic_steps
 
-    def __init__(self, llm_provider):
-        self.llm = llm_provider
+    def to_dict(self):
+        return {
+            "module_name": self.module_name,
+            "purpose": self.purpose,
+            "inputs": self.inputs,
+            "outputs": self.outputs,
+            "logic_steps": self.logic_steps
+        }
 
-    def generate(self, module_spec):
-        prompt = f"""
-You are an expert Python developer.
+async def execute(query: str, context: Dict[str, Any] = None) -> str:
+    """
+    The Programming Agent: Takes a request from the Architect to build a new capability,
+    designs a specification, writes the Python code, and saves it to disk.
+    """
+    context = context or {}
+    logger.info(f"[ProgrammingModule] Received coding request: '{query}'")
+    
+    if not HAS_GENAI:
+        return "⚠️ ERROR: Programming module requires google-genai and python-dotenv."
 
-Generate a complete Python module based on the following specification.
+    # Locate the API key using relative pathing to the root project
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(current_dir))
+    load_dotenv(os.path.join(project_root, ".env"))
 
-MODULE NAME:
-{module_spec.module_name}
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        return "⚠️ ERROR: GEMINI_API_KEY not found in environment."
 
-PURPOSE:
-{module_spec.purpose}
+    client = genai.Client(api_key=api_key)
 
-INPUTS:
-{module_spec.inputs}
-
-OUTPUTS:
-{module_spec.outputs}
-
-METHODS:
-{json.dumps(module_spec.methods, indent=2)}
-
-DEPENDENCIES:
-{module_spec.dependencies}
-
-Requirements:
-- Generate valid Python code.
-- Use clean, modular Python.
-- Include a class named exactly {module_spec.module_name}.
-- Implement all methods described in the specification.
-- Include docstrings.
-- Do not use external dependencies unless explicitly listed.
-- Do not include markdown.
-- Return ONLY the Python source code.
-"""
-
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are an expert Python developer who creates "
-                    "modular components for AI agent systems."
-                )
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-
-        response = self.llm.generate_response(messages)
-
-        # In case the LLM accidentally returns markdown fences
-        code = response.strip()
-
-        if code.startswith("```python"):
-            code = code[len("```python"):].strip()
-
-        if code.startswith("```"):
-            code = code[3:].strip()
-
-        if code.endswith("```"):
-            code = code[:-3].strip()
-
-        return code
+    logger.info("[ProgrammingModule] Phase 1: Drafting Module Specification...")
+    
+    spec_prompt = f"""
+    You are an expert Software Architect. The system needs a new Python module.
+    Analyze this request: "{query}"
+    
+    Output a JSON specification for this module.
+    It MUST match this exact schema:
+    {{
+        "module_name": "name_of_module",
+        "purpose": "What this module does",
+        "inputs": ["list", "of", "expected", "context", "variables"],
+        "outputs": ["list", "of", "return", "data"],
+        "logic_steps": ["step 1", "step 2", "step 3"]
+    }}
+    """
+    
+    try:
+        spec_response = await client.aio.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=spec_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                temperature=0.1
+            )
+        )
         
+        spec_data = json.loads(spec_response.text.strip())
+        spec = ModuleSpec(**spec_data)
+        logger.info(f"[ProgrammingModule] Specification created for: {spec.module_name}")
+        
+    except Exception as e:
+        logger.error(f"[ProgrammingModule] Failed to generate specification: {e}")
+        return f"⚠️ ERROR during spec generation: {e}"
+
+    logger.info("[ProgrammingModule] Phase 2: Generating Python Code...")
+    
+    code_prompt = f"""
+    You are an expert Python developer. Generate a complete Python module based on this specification:
+    {json.dumps(spec.to_dict(), indent=2)}
+    
+    CRITICAL ARCHITECTURAL REQUIREMENTS:
+    1. The module MUST contain an asynchronous function with this exact signature:
+       `async def execute(query: str, context: dict = None) -> str:`
+    2. Import standard libraries like `logging`, `json`, `os`, and `asyncio` as needed.
+    3. Include a configured logger: `logger = logging.getLogger("{spec.module_name}")`.
+    4. Ensure the `execute` function follows the `logic_steps` in the specification.
+    5. Handle errors gracefully using try/except blocks and return the error as a string if it fails.
+    6. Return ONLY the raw Python source code wrapped in a ```python block. No explanations.
+    """
+    
+    try:
+        code_response = await client.aio.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=code_prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.2
+            )
+        )
+        
+        raw_code = code_response.text.strip()
+        
+        # Extract just the code from the markdown fences
+        code_match = re.search(r'```python\n(.*?)\n```', raw_code, re.DOTALL)
+        if code_match:
+            final_code = code_match.group(1)
+        else:
+            # Fallback in case the LLM didn't use fences
+            final_code = raw_code.replace('```python', '').replace('```', '')
+
+        # Save to the generated_modules folder
+        output_dir = os.path.join(os.path.dirname(current_dir), "generated_modules")
+        os.makedirs(output_dir, exist_ok=True)
+        
+        filepath = os.path.join(output_dir, f"{spec.module_name}.py")
+        
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(final_code)
+            
+        logger.info(f"[ProgrammingModule] Successfully generated and saved to {filepath}")
+        
+        return f"✅ SUCCESS: New module '{spec.module_name}' generated!\n📁 Saved to: {filepath}\nThe Architect can now use this module in future workflows."
+        
+    except Exception as e:
+        logger.error(f"[ProgrammingModule] Failed to generate code: {e}")
+        return f"⚠️ ERROR during code generation: {e}"
