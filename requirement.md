@@ -24,7 +24,7 @@ Architect     (The architect/Architect_logic.py)        — Gemini-powered plann
    │  3. shows you the plan (Human-in-the-Loop — approve, modify, or cancel)
    │  4. runs the tasks in parallel, respecting dependencies
    ▼
-Workers:  writing_module → clarity_module → research_module (researchmodu) → programing_module
+Workers:  writing_module → clarity_module → research_module → programing_module
    │
    ▼
 outputs/  — WriterAgent saves its synthesized reports here (.txt / .tex)
@@ -105,33 +105,35 @@ TRIAGE_LLM=false
 
 ## 4. Python Dependencies
 
-All dependencies are consolidated in **`requirements.txt`** at the repository root.
-Install everything in one shot:
+There is **no root `requirements.txt`** — install the packages below into your
+virtual environment. (Module-level requirement files exist inside
+`Memory_module/requirements.txt` and `chat_module/requirements.txt`.)
+
+### Core — needed for `python main.py`
 
 ```powershell
-pip install -r requirements.txt
+pip install google-genai python-dotenv pydantic
 ```
 
-### What each package is for
+- `google-genai` — Gemini SDK (Architect, writer, clarity, research)
+- `python-dotenv` — `.env` loading
+- `pydantic` — task/state models in the Architect
+
+### Optional — per module
 
 | Package | Needed for |
 |---|---|
-| `google-genai` | Gemini SDK — Architect, Writer, Clarity, and Research agents (**core**) |
-| `python-dotenv` | `.env` loading in all modules (**core**) |
-| `pydantic` | Architect task/state models (**core**) |
 | `ddgs` | Live DuckDuckGo search in `researchmodu.py` (falls back gracefully if missing) |
-| `pinecone>=6.0` | Memory module (Pinecone long-term memory) |
-| `typing-extensions` | Required by the Pinecone SDK |
-| `groq` | Standalone chat app in `chat_module` (git submodule) |
-| `openai` *(commented out)* | **Only** the standalone `research.py` demo script (LangSearch). ⚠️ See Troubleshooting #3 before installing it |
-| `anthropic` *(commented out)* | Optional LLM triage in the Memory module (`TRIAGE_LLM=true`) |
+| `pinecone>=6.0` + `typing-extensions` | Memory module (`Memory_module/requirements.txt`) |
+| `groq` | Standalone chat app in `chat_module` |
+| `openai` | **Only** the standalone `research.py` demo script (LangSearch). ⚠️ See Troubleshooting #3 before installing it |
+| `anthropic` | Optional LLM triage in the Memory module (`TRIAGE_LLM=true`) |
 
-The two optional packages are intentionally commented out in `requirements.txt`:
-`openai` can block the master run at boot (see Troubleshooting #3), and `anthropic`
-is only needed with `TRIAGE_LLM=true`. Uncomment them only if you use those features.
+Install everything in one shot:
 
-Module-level requirement files also exist inside `Memory_module/requirements.txt`
-and `chat_module/requirements.txt` if you run those modules standalone.
+```powershell
+pip install google-genai python-dotenv pydantic ddgs pinecone typing-extensions groq
+```
 
 ---
 
@@ -170,7 +172,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ```powershell
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install google-genai python-dotenv pydantic ddgs pinecone typing-extensions groq
 ```
 
 ### 5.4 Configure your API key
