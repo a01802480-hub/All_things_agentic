@@ -36,3 +36,48 @@ This environment and the starter code are optimized for Windows setups.
 1. Clone the repository:
    ```bash
    git clone [https://github.com/a01802480-hub/All_things_agentic.git](https://github.com/a01802480-hub/All_things_agentic.git)
+
+## 🧪 Reproducible Testing
+
+The repository ships a deterministic, offline test suite so results can be reproduced on any machine without API keys, external services, or network access.
+
+### 1. Set up the environment
+From the repository root:
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+If PowerShell blocks activation, run this once in the current terminal:
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+```
+
+### 2. Run the full test suite
+From the repository root:
+```powershell
+python -m unittest discover -s tests -v
+```
+
+Expected output (all tests must pass):
+```text
+test_public_workflow_without_pinecone ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.054s
+
+OK
+```
+
+### 3. Run a single test module
+```powershell
+python -m unittest tests.test_memory_module -v
+```
+
+> **Note:** Always run tests from the repository root (as `-m unittest`). Executing the file directly (`python tests\test_memory_module.py`) fails because the module imports require the root on `sys.path`.
+
+### Reproducibility notes
+- The memory smoke test runs against the **local JSON backend** (`use_pinecone=False`) inside a temporary directory — no Pinecone account or API key is required, and no data is left behind after the run.
+- Timings in the output vary between machines; only the `ok` / `OK` status matters.
+- Live end-to-end testing against a real Pinecone index (requires an API key and network access) is documented separately in [LIVE_TESTING.md](LIVE_TESTING.md).
