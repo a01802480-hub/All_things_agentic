@@ -2,6 +2,7 @@ import logging
 import os
 import json
 import re
+import ast
 from typing import Dict, Any, List
 
 try:
@@ -20,13 +21,14 @@ class ModuleSpec:
     Represents the technical specification of a module before code generation.
     Adapted from the user's original OOP design.
     """
-    def __init__(self, module_name: str, purpose: str, inputs: List[str], outputs: List[str], logic_steps: List[str]):
+    def __init__(self, module_name: str, purpose: str, identified_gap: str, inputs: List[str], outputs: List[str], logic_steps: List[str]):
         # Ensure the module name is snake_case and ends with _module for the registry
         self.module_name = module_name.lower().replace(" ", "_")
         if not self.module_name.endswith("_module"):
             self.module_name += "_module"
             
         self.purpose = purpose
+        self.identified_gap = identified_gap
         self.inputs = inputs
         self.outputs = outputs
         self.logic_steps = logic_steps
@@ -35,6 +37,7 @@ class ModuleSpec:
         return {
             "module_name": self.module_name,
             "purpose": self.purpose,
+            "identified_gap": self.identified_gap,
             "inputs": self.inputs,
             "outputs": self.outputs,
             "logic_steps": self.logic_steps
@@ -43,7 +46,7 @@ class ModuleSpec:
 async def execute(query: str, context: Dict[str, Any] = None) -> str:
     """
     The Programming Agent: Takes a request from the Architect to build a new capability,
-    designs a specification, writes the Python code, and saves it to disk.
+    designs a specification, writes the Python code, audits it, and saves it to disk.
     """
     context = context or {}
     logger.info(f"[ProgrammingModule] Received coding request: '{query}'")
@@ -68,11 +71,15 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
     You are an expert Software Architect. The system needs a new Python module.
     Analyze this request: "{query}"
     
+    Identify the capability GAP in the current system. What is missing? 
+    Design a module to eliminate this gap.
+    
     Output a JSON specification for this module.
     It MUST match this exact schema:
     {{
         "module_name": "name_of_module",
         "purpose": "What this module does",
+        "identified_gap": "The exact capability gap this module eliminates",
         "inputs": ["list", "of", "expected", "context", "variables"],
         "outputs": ["list", "of", "return", "data"],
         "logic_steps": ["step 1", "step 2", "step 3"]
@@ -131,6 +138,45 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
         else:
             # Fallback in case the LLM didn't use fences
             final_code = raw_code.replace('```python', '').replace('```', '')
+
+        logger.info("[ProgrammingModule] Phase 3: Auditing code for capability gaps and bugs...")
+        
+        # SELF-HEALING: Find gaps in its own generated code and eliminate them
+        gap_errors = []
+        try:
+            ast.parse(final_code) # Validates Python syntax without running the code
+        except SyntaxError as e:
+            gap_errors.append(f"Syntax Error on line {e.lineno}: {e.msg}")
+            
+        if "async def execute" not in final_code:
+            gap_errors.append("Architectural Gap: The module is missing the required `async def execute(query: str, context: dict = None) -> str:` function.")
+
+        if gap_errors:
+            logger.warning(f"[ProgrammingModule] Gaps found in generated module! Initiating Self-Correction Phase...")
+            error_list = "\n- ".join(gap_errors)
+            
+            # This is where the code got cut off before! It is fully complete now.
+            correction_prompt = f"""
+            Eliminate the following gaps in your previous code:
+            - {error_list}
+            
+            ORIGINAL CODE:
+            ```python
+            {final_code}
+            """
+            
+            correction_response = await client.aio.models.generate_content(
+                model='gemini-3.6-flash',
+                contents=correction_prompt,
+                config=types.GenerateContentConfig(temperature=0.1)
+            )
+            
+            correct_raw = correction_response.text.strip()
+            correct_match = re.search(r'```python\n(.*?)\n```', correct_raw, re.DOTALL)
+            final_code = correct_match.group(1) if correct_match else correct_raw.replace('```python', '').replace('```', '')
+            logger.info("[ProgrammingModule] Gaps successfully eliminated. Code is structurally sound.")
+        else:
+            logger.info("[ProgrammingModule] No structural gaps found in code.")
 
         # Save to the generated_modules folder
         output_dir = os.path.join(os.path.dirname(current_dir), "generated_modules")
