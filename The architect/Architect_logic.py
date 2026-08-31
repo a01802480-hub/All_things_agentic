@@ -162,10 +162,10 @@ class Architect:
         # Clearly format the tools for the LLM
         return ", ".join([f"'{name}'" for name in self.registry.workers.keys()])
 
-    async def _generate_execution_plan(self, goal: str) -> str:
+    async def _generate_execution_plan(self, goal: str, user_feedback: str = None) -> str:
         """
         Uses Gemini to analyze the goal and generate a JSON task graph (DAG).
-        It is fully aware of what tools/modules are currently available on disk.
+        If user_feedback is provided, it incorporates it to modify the previous plan.
         """
         available_tools = self._get_available_tools_string()
         logger.info(f"[Architect] Planning phase. Providing LLM with tools: [{available_tools}]")
@@ -177,22 +177,33 @@ class Architect:
         
         User Goal & Context:
         {goal}
+        """
+        
+        if user_feedback:
+            prompt += f"""
+            
+            ⚠️ USER FEEDBACK ON PREVIOUS PLAN: ⚠️
+            The user rejected your last plan and provided this feedback: "{user_feedback}"
+            You MUST modify the tasks, their descriptions, or the assigned agents to strictly accommodate this feedback.
+            """
+
+        prompt += """
         
         CRITICAL RULES:
         1. Only assign tasks to the exact module names listed above. YOU MUST NOT MAKE UP TOOL NAMES (like 'general_worker' or 'search'). If a tool is missing, use the closest available one from the list.
         2. Output MUST be a valid JSON object containing a "tasks" array.
         
         Output format:
-        {{
+        {
           "tasks": [
-            {{
+            {
               "task_id": "t1", 
               "description": "Clear instruction for the worker", 
               "required_agent": "exact_module_name_from_list", 
               "dependencies": []
-            }}
+            }
           ]
-        }}
+        }
         """
         
         # Call Gemini asynchronously, enforcing JSON mode
@@ -201,7 +212,7 @@ class Architect:
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                temperature=0.1
+                temperature=0.2 # Slightly higher temp to allow for creative re-planning
             )
         )
         
@@ -283,21 +294,61 @@ class Architect:
 
         state = ExecutionState(main_goal=user_chat, shared_context={"preferences": historical_preferences})
 
-        # 2. Plan based on discovered tools (Now using the real LLM!)
-        try:
-            plan_json = await self._generate_execution_plan(state.main_goal)
-            
-            # Parse the JSON and build the DAG
-            plan_data = json.loads(plan_json)
-            tasks_list = plan_data.get("tasks", [])
-            for t in tasks_list:
-                state.tasks[t["task_id"]] = SubTask(**t)
-            state.global_status = "EXECUTING"
-            
-        except Exception as e:
-            logger.error(f"[Architect] Planning failed! Error: {e}")
-            state.global_status = "FAILED"
-            return state
+        # 2. Plan based on discovered tools WITH HUMAN-IN-THE-LOOP (HITL)
+        plan_approved = False
+        user_feedback = None
+        tasks_list = []
+        
+        while not plan_approved:
+            try:
+                plan_json = await self._generate_execution_plan(state.main_goal, user_feedback)
+                
+                # Parse the JSON
+                plan_data = json.loads(plan_json)
+                tasks_list = plan_data.get("tasks", [])
+                
+                # Present the plan to the user in the terminal
+                print("\n" + "="*60)
+                print("📋 ORCHESTRATOR PROPOSED EXECUTION PLAN 📋")
+                print("="*60)
+                if not tasks_list:
+                    print("  ⚠️ The Orchestrator could not determine any actionable tasks.")
+                else:
+                    for i, t in enumerate(tasks_list, 1):
+                        print(f"  Step {i}: [{t['required_agent']}] -> {t['description']}")
+                print("="*60)
+                
+                # Intercept execution and wait for user input
+                print("\nOptions:")
+                print(" - Press [ENTER] to approve and execute.")
+                print(" - Type instructions to change the plan (e.g., 'Make it more mathematical', 'Add a synthesis step').")
+                print(" - Type 'cancel' to abort.")
+                
+                # Use asyncio.to_thread so input() doesn't freeze the async event loop
+                user_input = await asyncio.to_thread(input, "\n[Human-in-the-Loop] >> ")
+                user_input = user_input.strip()
+                
+                if user_input.lower() == 'cancel':
+                    logger.info("[Architect] User cancelled the workflow.")
+                    state.global_status = "CANCELLED"
+                    return state
+                elif not user_input:
+                    logger.info("[Architect] Plan approved by user. Proceeding to execution.")
+                    plan_approved = True
+                else:
+                    logger.info(f"[Architect] User requested plan modifications: {user_input}")
+                    user_feedback = user_input
+                    print("\n🔄 Re-evaluating plan based on your feedback. Please wait...")
+                    
+            except Exception as e:
+                logger.error(f"[Architect] Planning failed! Error: {e}")
+                state.global_status = "FAILED"
+                return state
+
+        # 2b. Parse the approved JSON and build the DAG
+        for t in tasks_list:
+            state.tasks[t["task_id"]] = SubTask(**t)
+        state.global_status = "EXECUTING"
 
         # 3. Execute
         await self.execute_workflow(state)
