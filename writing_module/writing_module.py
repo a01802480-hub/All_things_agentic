@@ -117,8 +117,8 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
         # Provide a short preview for the terminal
         preview = report_content[:400] + "\n\n... [CONTENT TRUNCATED FOR TERMINAL. SEE FILE FOR FULL REPORT]"
             
-        return f"✅ SUCCESS: Full Academic Report generated and saved!\n📁 File Path: {filepath}\n\n--- PREVIEW ---\n{preview}"
+        return f" SUCCESS: Full Academic Report generated and saved!\n File Path: {filepath}\n\n--- PREVIEW ---\n{preview}"
             
     except Exception as e:
         logger.error(f"[WriterAgent] Failed to synthesize report: {e}")
-        return f"⚠️ ERROR during report synthesis: {e}"
+        return f"ERROR during report synthesis: {e}"

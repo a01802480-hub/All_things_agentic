@@ -1,0 +1,32 @@
+# All Things Agentic — consolidated requirements
+# Master entry point: python main.py  (install from the repo root)
+#
+# Versions listed are the minimums verified against the working .venv
+# (Python 3.14.3). Where a module ships its own requirements.txt, the
+# floor is taken from that file (Memory_module/requirements.txt,
+# chat_module/requirements.txt).
+
+# === Core — required for the master run (python main.py) ===
+google-genai>=2.0        # Architect, Writer, Clarity, and Research agents (Gemini API)
+python-dotenv>=1.0       # .env loading (all modules)
+pydantic>=2.0            # Architect task/state models
+
+# === Research module — live web search in researchmodu.py ===
+ddgs>=9.0                # DuckDuckGo search (researchmodu falls back gracefully if missing)
+
+# === Memory module — Pinecone long-term memory ===
+pinecone>=6.0            # Pinecone SDK (Memory_module/requirements.txt)
+typing-extensions>=4.6   # required by the Pinecone SDK (Memory_module/requirements.txt)
+
+# === Chat module (git submodule) — standalone chat app ===
+groq>=1.0                # chat_module/Chat Module/App
+
+# === Optional — uncomment only if you need the feature ===
+#
+# anthropic>=0.40        # only when TRIAGE_LLM=true in .env (LLM fact extraction)
+#
+# openai>=1.30           # ONLY for running research_module/research.py standalone
+#                        # (LangSearch demo). WARNING: if openai is installed AND
+#                        # SEARCH_API_KEY is set, the Architect's boot-time module
+#                        # scan imports research.py, which prompts for input at
+#                        # module level and blocks `python main.py` at startup.
