@@ -44,7 +44,7 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
 
     logger.info("[WriterAgent] Compiling full academic report using Gemini...")
 
-    # We drastically expand the prompt to force the LLM to write a lengthy, structured document
+    # Aggressive prompt expansion to force dissertation-level length
     prompt = f"""
     You are an expert academic Synthesizer and Technical Writer.
     Your task is to write a highly detailed, comprehensive, and exhaustive academic report based strictly on the provided research data.
@@ -54,25 +54,27 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
     Provided Research Data:
     {compiled_research}
         
-    CRITICAL INSTRUCTIONS FOR LENGTH AND DEPTH:
-    1. DO NOT summarize briefly. You must expand heavily on every concept, mathematical formula, and physics principle provided in the research.
-    2. Explain the "why" and "how" behind the data. If formulas are present, explain their variables and implications in detail step-by-step.
-    3. The report MUST be structured like a formal academic paper containing:
-       - Title
-       - Abstract (Executive Summary)
-       - Introduction
-       - Detailed Main Body (with multiple well-defined subsections)
-       - Analysis / Mathematical Framework
-       - Conclusion
-       - References (based on the provided snippets)
+    CRITICAL INSTRUCTIONS FOR LENGTH AND DEPTH (MANDATORY):
+    1. DO NOT summarize. You are writing a full-length dissertation-style paper.
+    2. Expand relentlessly on EVERY single concept, mathematical formula, and physics principle.
+    3. Each subsection MUST contain at least 4 to 5 lengthy paragraphs of deep theoretical analysis.
+    4. For every equation provided (especially the FOIT equation and fractals), you MUST explain the mathematical derivations, the physical meaning of every variable, and its real-world implications in atmospheric physics.
+    5. Target a massive document length. Do not conclude the document quickly.
+        
+    STRUCTURE:
+    - \\title{{...}}
+    - \\begin{{abstract}} ... \\end{{abstract}} (Must be a deep 2-paragraph summary)
+    - \\section{{Introduction}} (Extensive background context)
+    - \\section{{Mathematical Review and Background}} (The core of the paper. Break this into multiple \\subsection and \\subsubsection for FOIT, Fractals, Mandelbrot, etc. Relentlessly expand here.)
+    - \\section{{Methodology}} (Include mathematical screening steps)
+    - \\section{{Conclusion}}
+    - \\section{{References}}
         
     CRITICAL INSTRUCTIONS FOR FORMATTING:
-    1. You MUST ALWAYS output the entire report as a fully compilable LaTeX document, regardless of the content. 
-       - Start with \\documentclass{{article}}
-       - Include standard packages (\\usepackage{{amsmath, amssymb, geometry, graphicx}})
-       - Use proper sectioning (\\section, \\subsection).
-    2. DO NOT wrap your response in markdown code blocks (like ```latex). Output ONLY the raw LaTeX code.
-    3. Do NOT hallucinate information outside of the provided research data, but DO use your expert knowledge to stitch the provided facts together elegantly and comprehensively.
+    1. Output the ENTIRE report as a fully compilable LaTeX document. Start with \\documentclass{{article}} and STRICTLY end with \\end{{document}}.
+    2. Include standard packages: \\usepackage{{amsmath, amssymb, geometry, graphicx, hyperref}}
+    3. DO NOT wrap your response in markdown code blocks (like ```latex). Output ONLY the raw LaTeX code.
+    4. Do NOT hallucinate information outside of the provided research data, but DO use your expert knowledge to stitch the provided facts together elegantly.
     """
     
     try:
@@ -95,8 +97,14 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
             report_content = "\n".join(report_content.split("\n")[1:])
         if report_content.endswith("```"):
             report_content = "\n".join(report_content.split("\n")[:-1])
-                
+            
         report_content = report_content.strip()
+
+        # LATEX FAIL-SAFE: If the LLM hits the 8k token limit and gets cut off, automatically close the document
+        if "\\end{document}" not in report_content:
+            logger.warning("[WriterAgent] LLM output was truncated due to massive length. Auto-appending \\end{document}.")
+            # Find the last complete paragraph or line and append the closing tag safely
+            report_content += "\n\n% [AUTO-RECOVERY: Document was truncated due to extreme length]\n\\end{document}"
             
         # We now ALWAYS force the file to be saved as a LaTeX document
         file_ext = ".tex"
@@ -117,8 +125,8 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
         # Provide a short preview for the terminal
         preview = report_content[:400] + "\n\n... [CONTENT TRUNCATED FOR TERMINAL. SEE FILE FOR FULL REPORT]"
             
-        return f" SUCCESS: Full Academic Report generated and saved!\n File Path: {filepath}\n\n--- PREVIEW ---\n{preview}"
+        return f"✅ SUCCESS: Full Academic Report generated and saved!\n📁 File Path: {filepath}\n\n--- PREVIEW ---\n{preview}"
             
     except Exception as e:
         logger.error(f"[WriterAgent] Failed to synthesize report: {e}")
-        return f"ERROR during report synthesis: {e}"
+        return f"⚠️ ERROR during report synthesis: {e}"

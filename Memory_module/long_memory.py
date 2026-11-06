@@ -61,15 +61,26 @@ class VectorStore:
 
         self.pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
         names = [item.name for item in self.pc.list_indexes()]
+        
         if self.index_name in names:
             index_description = self.pc.describe_index(self.index_name)
-            self.dimension = int(index_description.dimension)
+            try:
+                # Attempt to read the dimension from the existing index
+                self.dimension = int(index_description.dimension)
+            except Exception as e:
+                # Fallback to the default dimension if Pinecone throws the schema error
+                pass 
         else:
-            self.pc.create_index(name=self.index_name, dimension=self.dimension, metric="cosine",
-                                 spec=ServerlessSpec(cloud=os.getenv("PINECONE_CLOUD", "aws"),
-                                                     region=os.getenv("PINECONE_REGION", "us-east-1")))
+            self.pc.create_index(
+                name=self.index_name, 
+                dimension=self.dimension, 
+                metric="cosine",
+                spec=ServerlessSpec(
+                    cloud=os.getenv("PINECONE_CLOUD", "aws"),
+                    region=os.getenv("PINECONE_REGION", "us-east-1")
+                )
+            )
         self.index = self.pc.Index(self.index_name)
-
     def _get_embedding(self, text: str) -> List[float]:
         digest = hashlib.sha256(text.encode("utf-8")).digest()
         values = [(byte / 255.0) * 2.0 - 1.0 for byte in digest]
