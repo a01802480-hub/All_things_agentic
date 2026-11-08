@@ -1,0 +1,264 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{bm}
+
+\geometry{margin=1in}
+
+\title{\textbf{Theoretical Framework Part II: Analytical Methods, Reaction Mechanisms, and Mathematical Foundations of Atmospheric Photochemistry and Redox Titrations}}
+\author{\textbf{Analytical Chemistry \& Atmospheric Physics Research Division}}
+\date{\today}
+
+\begin{begin}{document}
+
+\maketitle
+
+\begin{abstract}
+This report establishes an exhaustive theoretical framework unifying analytical quantification techniques, non-linear mathematical transport modeling, and complex chemical reaction mechanisms. The manuscript delves rigorously into the dual pillars of modern chemical analysis: Iodine Back Titration and UV-Vis Spectrophotometry grounded in the Beer-Lambert Law. By formalizing the stoichiometric half-reactions, equilibrium dynamics of triiodide complexation, starch-amylose inclusion phenomena, and quantum electronic transition manifolds, we construct a rigorous analytical foundation for precise analyte determination in turbulent, heterogeneous reactive environments.
+
+Simultaneously, this framework incorporates advanced non-Euclidean spatial modeling and non-Markovian transport equations to capture physical real-world anomalies. We expand upon the Fractional Optical Intensity Transport (FOIT) equation, analyzing how anomalous diffusion parameters and fractional derivative orders affect irradiance decay in scattering media. Furthermore, we construct a fractal geometric model using Mandelbrot set transformations and self-similar aggregate scaling to parameterize particle morphology and interfacial kinetic rates. Combined with a multi-stage mathematical screening protocol, this theoretical synthesis provides a unified mathematical and chemical structure for high-precision analytical spectroscopy and atmospheric chemistry.
+\end{abstract}
+
+\section{Introduction}
+
+The quantitative measurement of trace chemical species in atmospheric, environmental, and industrial fluids requires analytical methodologies robust to non-linear physical phenomena and complex chemical matrices. Classic analytical titrimetry and spectrophotometry remain the quantitative backbone for characterizing redox-active compounds, atmospheric oxidants, and photochemical intermediates. However, traditional continuous-medium approximations often fail when applied to real-world atmospheric systems, where turbulent transport, fractal particle aggregation, and non-Markovian optical attenuation dominate.
+
+To bridge the gap between ideal laboratory analytical chemistry and complex real-world physical dynamics, this paper presents a comprehensive synthesis of analytical reaction kinetics, spectroscopic theory, fractional calculus, and fractal geometry. The primary objective is to formalize the quantitative principles of Iodine Back Titration and UV-Vis Absorption Spectrophotometry while contextualizing their operational limits within complex physical environments modeled by Fractional Optical Intensity Transport (FOIT) and Mandelbrot-derived fractal structures.
+
+The theoretical framework is structured as follows: Section 2 outlines the mathematical review of non-Euclidean transport dynamics, deriving the FOIT equation and detailing the fractal geometry of aerosol aggregates. Section 3 presents the core analytical methodologies, detailing the complete redox mechanisms, reaction stoichiometry, quantum mechanical absorption principles, and systemic deviations of Beer-Lambert spectrophotometry. Section 4 presents a mathematical screening framework for analytical signal extraction, followed by a synthesis of conclusions and a complete bibliography.
+
+\section{Mathematical Review and Background}
+
+\subsection{Fractional Optical Intensity Transport (FOIT) Equation}
+
+Standard optical attenuation in homogeneous, non-scattering media is governed by first-order linear differential equations leading to classic exponential decay. However, in heterogeneous atmospheric layers, turbulent aerosol fields, and multiply-scattering turbid media, the transport of optical intensity exhibits anomalous, non-Markovian memory effects and long-range spatial correlations. To account for these phenomena, we introduce the Fractional Optical Intensity Transport (FOIT) equation, which replaces standard integer-order spatiotemporal derivatives with integro-differential operators of fractional order.
+
+The generalized one-dimensional FOIT equation for optical intensity $I(x,t)$ propagating along axis $x$ through a dynamic, attenuating medium is expressed as:
+\begin{equation}
+\frac{\partial^\alpha I(x,t)}{\partial t^\alpha} + v_\alpha \frac{\partial^\beta I(x,t)}{\partial x^\beta} = D_\alpha \frac{\partial^2 I(x,t)}{\partial x^2} - \sigma_{\text{ext}}(x,t) I(x,t) + S(x,t)
+\end{equation}
+where $\frac{\partial^\alpha}{\partial t^\alpha}$ represents the Caputo fractional time derivative of order $\alpha \in (0,1]$, $\frac{\partial^\beta}{\partial x^\beta}$ is the Riemann-Liouville fractional space derivative of order $\beta \in (0,1]$, $v_\alpha$ is the anomalous transport velocity coefficient with dimensions $[L T^{-\alpha}]$, $D_\alpha$ is the fractional diffusion coefficient $[L^2 T^{-\alpha}]$, $\sigma_{\text{ext}}(x,t)$ is the dynamic extinction cross-section density $[L^{-1}]$, and $S(x,t)$ is an internal source term representing local photoluminescent or scattering re-emission.
+
+The Caputo fractional temporal derivative is defined explicitly as:
+\begin{equation}
+\frac{\partial^\alpha I(x,t)}{\partial t^\alpha} = \frac{1}{\Gamma(1-\alpha)} \int_{0}^{t} (t - \tau)^{-\alpha} \frac{\partial I(x,\tau)}{\partial \tau} d\tau
+\end{equation}
+where $\Gamma(\cdot)$ denotes the Euler Gamma function. The physical interpretation of the kernel $(t - \tau)^{-\alpha}$ is a power-law memory function. Unlike classical memoryless transport ($\alpha = 1$), where the rate of intensity change depends strictly on the instantaneous state at time $t$, fractional temporal transport preserves a history of prior radiative state transitions. This models sub-diffusive photon trapping within dense particle clouds, where photons undergo temporary localized retention before re-emerging into the ballistic path.
+
+The space-fractional derivative $\frac{\partial^\beta I(x,t)}{\partial x^\beta}$, formulated in the Riemann-Liouville sense, is defined as:
+\begin{equation}
+\frac{\partial^\beta I(x,t)}{\partial x^\beta} = \frac{1}{\Gamma(1-\beta)} \frac{d}{dx} \int_{0}^{x} (x - y)^{-\beta} I(y,t) dy
+\end{equation}
+Setting $\beta < 1$ models super-diffusive spatial transport, commonly referred to as "Lévy flights." In atmospheric photon transport, spatial fractionality characterizes long-ballistic flight paths of unscattered light traversing low-density interstitial voids between high-density aerosol clusters, punctuated by localized intense isotropic scattering events.
+
+Under steady-state conditions ($\frac{\partial^\alpha I}{\partial t^\alpha} = 0$) without spatial diffusion ($D_\alpha = 0$) or internal sources ($S = 0$), the fractional spatial transport equation reduces to:
+\begin{equation}
+v_\alpha \frac{d^\beta I(x)}{dx^\beta} = -\sigma_{\text{ext}} I(x)
+\end{equation}
+Applying the Laplace transform method to this fractional differential equation yields the spatial intensity decay solution in terms of the two-parameter Mittag-Leffler function, $E_{\beta, \gamma}(z)$:
+\begin{equation}
+I(x) = I_0 \, E_{\beta, 1}\left( -\frac{\sigma_{\text{ext}}}{v_\alpha} x^\beta \right)
+\end{equation}
+where the Mittag-Leffler function is defined by the infinite series expansion:
+\begin{equation}
+E_{\beta, \gamma}(z) = \sum_{k=0}^{\infty} \frac{z^k}{\Gamma(\beta k + \gamma)}
+\end{equation}
+
+When $\beta = 1$, the Mittag-Leffler function collapses to the classical exponential decay $E_{1,1}(-z) = \exp(-z)$, recovering standard Beer-Lambert transport. However, for fractional orders $\beta < 1$, the asymptotic behavior of $I(x)$ for large distances $x$ transitions from an exponential decay to a heavy-tailed algebraic power-law decay:
+\begin{equation}
+I(x) \sim I_0 \frac{\left( \frac{v_\alpha}{\sigma_{\text{ext}}} \right)}{\Gamma(1-\beta)} x^{-\beta} \quad \text{as } x \to \infty
+\end{equation}
+This power-law tail demonstrates that classical exponential attenuation models drastically underestimate photon penetration depth in non-homogeneous, fractionally structured media.
+
+\subsection{Fractal Geometry and Mandelbrot Transformations in Particle Assemblies}
+
+Atmospheric particulates, soot aggregates, and precipitation nuclei do not exist as smooth Euclidean spheres; rather, they form complex fractal aggregates characterized by non-integer spatial dimensions. Standard analytical models assuming spherical geometry systematically miscalculate heterogeneous chemical reaction rates and optical extinction cross-sections. To accurately represent aggregate geometry, we employ fractal scaling laws derived from self-similar spatial transformations.
+
+The total number of primary monomer particles $N_p$ of radius $a$ within a fractal aggregate of radius of gyration $R_g$ is governed by the structural scaling relation:
+\begin{equation}
+N_p = k_0 \left( \frac{R_g}{a} \right)^{D_f}
+\end{equation}
+where $k_0$ is the fractal prefactor (structural compactness factor) and $D_f \in (1,3)$ is the mass fractal dimension. The radius of gyration $R_g$ is mathematically defined as the root-mean-square distance of all primary monomers from the aggregate center of mass $\mathbf{r}_{\text{cm}}$:
+\begin{equation}
+R_g = \sqrt{ \frac{1}{N_p} \sum_{i=1}^{N_p} |\mathbf{r}_i - \mathbf{r}_{\text{cm}}|^2 }
+\end{equation}
+
+For diffuse, diffusion-limited cluster aggregation (DLCA), $D_f \approx 1.78 - 1.82$, producing highly open, branched structures. For reaction-limited cluster aggregation (RLCA), $D_f \approx 2.10 - 2.20$, resulting in denser aggregate topologies. The total effective surface area $A_{\text{eff}}$ available for heterogeneous chemical reactions on a fractal aggregate scales non-linearly with its linear spatial dimension $L$:
+\begin{equation}
+A_{\text{eff}}(L) \propto L^{D_s}
+\end{equation}
+where $D_s$ is the surface fractal dimension. For perfectly smooth Euclidean objects, $D_s = 2$; for highly irregular, pore-dense catalytic atmospheric structures, $D_s \to 3$.
+
+To model the iterative spatial boundary transitions of complex aggregate interfaces, we implement a discrete complex nonlinear mapping governed by the quadratic Mandelbrot transformation:
+\begin{equation}
+z_{n+1} = z_n^2 + c, \quad z_0 = 0, \quad z_n, c \in \mathbb{C}
+\end{equation}
+The Mandelbrot set $\mathcal{M}$ is defined as the locus of parameter points $c$ in the complex plane for which the sequence generated by equation (11) remains bounded as $n \to \infty$:
+\begin{equation}
+\mathcal{M} = \{ c \in \mathbb{C} \mid \lim_{n \to \infty} |z_n| \neq \infty \}
+\end{equation}
+
+The topological boundary $\partial \mathcal{M}$ of the Mandelbrot set exhibits a fractal dimension $D_f = 2$. By mapping the complex parameter $c = c_x + i c_y$ to physical spatial coordinates $(x,y)$ of an aerosol boundary layer, the potential field $\Psi(z)$ of the iterative mapping provides a mathematical model for multi-scale boundary roughness:
+\begin{equation}
+\Psi(z) = \lim_{n \to \infty} \frac{1}{2^n} \ln |z_n|
+\end{equation}
+This field governs the local gradient of reacting chemical species at the interface. The localized flux density $J_{\text{reac}}$ of an analyte diffusing toward a fractal boundary is augmented by the local fractional boundary capacity:
+\begin{equation}
+J_{\text{reac}}(\mathbf{r}) = -D_{\text{mol}} \, \nabla^{\alpha_{\text{surf}}} C(\mathbf{r})
+\end{equation}
+where $D_{\text{mol}}$ is the molecular diffusion coefficient, and $\alpha_{\text{surf}} = (D_f - 1)/2$ is the surface-induced fractional diffusion order. Consequently, the rate of heterogeneous analyte loss on aggregate surfaces is tightly coupled to the non-Euclidean topology captured by the Mandelbrot potential field.
+
+\section{Analytical Methods \& Reaction Mechanisms}
+
+\subsection{Iodine Back Titration}
+
+Iodine back titration is a high-precision volumetric analytical methodology employed to quantify reducing agents or volatile oxidants that exhibit slow direct titration kinetics or high volatility. In this technique, a known, stoichiometric excess of elemental iodine (generated *in situ* as the triiodide ion, $\text{I}_3^-$) is introduced to the sample. The analyte reacts quantitatively with a portion of the triiodide. The unreacted residual triiodide is subsequently back-titrated using a standardized solution of sodium thiosulfate ($\text{Na}_2\text{S}_2\text{O}_3$), using starch as a visual or spectrophotometric endpoint indicator.
+
+\subsubsection{Chemical Reactions and Balanced Redox Equations}
+
+The analytical sequence begins with the generation and stabilization of the triiodide reagent in aqueous solution. Elemental iodine ($\text{I}_2$) exhibits low solubility in pure water ($1.33 \times 10^{-3} \text{ M}$ at $25^\circ\text{C}$). To solubilize $\text{I}_2$ and prevent volatile loss, excess potassium iodide ($\text{KI}$) is added, driving the reversible complexation equilibrium to form the highly soluble triiodide anion:
+\begin{equation}
+\text{I}_2(aq) + \text{I}^-(aq) \rightleftharpoons \text{I}_3^-(aq) \quad \left(K_{\text{eq}} = 710 \text{ M}^{-1} \text{ at } 25^\circ\text{C}\right)
+\end{equation}
+
+In the primary oxidation-reduction reaction, the triiodide ion functions as the primary oxidizing agent. Consider the quantitative determination of dissolved sulfur dioxide ($\text{SO}_2$) or aqueous sulfurous acid ($\text{H}_2\text{SO}_3$), a representative atmospheric reducing analyte. The balanced half-reactions are formulated as follows:
+
+\text{Oxidation half-reaction (Analyte):}
+\begin{equation}
+\text{H}_2\text{SO}_3(aq) + \text{H}_2\text{O}(l) \longrightarrow \text{SO}_4^{2-}(aq) + 4\text{H}^+(aq) + 2e^- \quad (E^\circ = -0.172 \text{ V vs. SHE})
+\end{equation}
+
+\text{Reduction half-reaction (Triiodide Reagent):}
+\begin{equation}
+\text{I}_3^-(aq) + 2e^- \longrightarrow 3\text{I}^-(aq) \quad (E^\circ = +0.536 \text{ V vs. SHE})
+\end{equation}
+
+\text{Overall Primary Stoichiometric Redox Reaction:}
+\begin{equation}
+\text{H}_2\text{SO}_3(aq) + \text{I}_3^-(aq) + \text{H}_2\text{O}(l) \longrightarrow \text{SO}_4^{2-}(aq) + 3\text{I}^-(aq) + 4\text{H}^+(aq)
+\end{equation}
+
+Upon completion of the primary reaction, the unreacted residual triiodide ($\text{I}_3^-_{\text{excess}}$) is quantified via back titration with a standardized sodium thiosulfate solution. Thiosulfate ($\text{S}_2\text{O}_3^{2-}$) undergoes a clean two-electron oxidation to form the tetrathionate ion ($\text{S}_4\text{O}_6^{2-}$):
+
+\text{Oxidation half-reaction (Titrant):}
+\begin{equation}
+2\text{S}_2\text{O}_3^{2-}(aq) \longrightarrow \text{S}_4\text{O}_6^{2-}(aq) + 2e^- \quad (E^\circ = -0.080 \text{ V vs. SHE})
+\end{equation}
+
+\text{Reduction half-reaction (Residual Triiodide):}
+\begin{equation}
+\text{I}_3^-(aq) + 2e^- \longrightarrow 3\text{I}^-(aq) \quad (E^\circ = +0.536 \text{ V vs. SHE})
+\end{equation}
+
+\text{Overall Back-Titration Redox Reaction:}
+\begin{equation}
+\text{I}_3^-(aq) + 2\text{S}_2\text{O}_3^{2-}(aq) \longrightarrow 3\text{I}^-(aq) + \text{S}_4\text{O}_6^{2-}(aq)
+\end{equation}
+
+The net standard cell potential for the back-titration reaction is:
+\begin{equation}
+E^\circ_{\text{cell}} = E^\circ_{\text{reduction}} - E^\circ_{\text{oxidation}} = 0.536 \text{ V} - 0.080 \text{ V} = +0.456 \text{ V}
+\end{equation}
+The equilibrium constant $K_{\text{titr}}$ for the back titration at $T = 298.15 \text{ K}$ is derived via the Nernst relation:
+\begin{equation}
+\ln K_{\text{titr}} = \frac{n F E^\circ_{\text{cell}}}{R T} \implies K_{\text{titr}} = \exp\left( \frac{2 \times 96485 \times 0.456}{8.314 \times 298.15} \right) \approx 2.6 \times 10^{15}
+\end{equation}
+This exceptionally large equilibrium constant confirms that the thiosulfate-triiodide reaction proceeds virtually to quantitative completion.
+
+\subsubsection{Starch Indicator Mechanism}
+
+The visual identification of the equivalence point relies on the formation of an intensely blue inclusion complex between iodine species and the helical structure of amylose, a linear polymer component of starch composed of $\alpha$-(1,4)-D-glucose units.
+
+Amylose adopts a left-handed helical conformation in aqueous solution with a central hydrophobic cavity of approximately 0.5 nm diameter. In the presence of iodide and triiodide ions, linear polyiodide chains sequence within this helical core. The dominant absorbing chromophore inside the amylose helix is the pentaiodide anion ($\text{I}_5^-$) or higher-order polyiodides ($\text{I}_7^-$, $\text{I}_9^-$), formed via spatial assembly:
+\begin{equation}
+\text{I}_3^-(aq) + \text{I}_2(aq) \rightleftharpoons \text{I}_5^-(aq)
+\end{equation}
+\begin{equation}
+\text{Amylose (helix)} + \text{I}_5^-(aq) \rightleftharpoons [\text{Amylose}\cdot\text{I}_5^-] \quad (\text{Deep Blue Complex})
+\end{equation}
+
+The intense blue color ($\lambda_{\max} \approx 610 - 620 \text{ nm}$) results from extensive delocalization of continuous electron density along the linear polyiodide chain inside the non-polar amylose channel. This delocalization narrows the HOMO-LUMO energy gap ($\Delta E$), shifting the charge-transfer absorption band from the ultraviolet region into the red spectral region, giving the complex its characteristic deep blue appearance.
+
+During titration, as thiosulfate consumes free $\text{I}_3^-$, the complexation equilibrium shifts:
+\begin{equation}
+[\text{Amylose}\cdot\text{I}_5^-] \longrightarrow \text{Amylose} + \text{I}_3^- + \text{I}_2
+\end{equation}
+At the equivalence point, the concentration of free $\text{I}_3^-$ drops below $10^{-5} \text{ M}$, triggering the complete dissociation of the complex and an abrupt color transition from intense blue to completely colorless. To prevent irreversible entrapment of high-concentration iodine within the starch matrix (which causes premature degradation of the polymer and sluggish endpoint transitions), starch indicator must be added only near the titration endpoint, when the solution has faded to a pale straw yellow color.
+
+\subsubsection{Quantitative Stoichiometry and Derivation of Analyte Concentration}
+
+To perform exact quantitative determination, we establish rigorous mole-balance equations based on the stoichiometry of equations (18) and (21).
+
+Let $V_{\text{I3, total}}$ be the total volume of standardized triiodide solution added of molarity $C_{\text{I3}}$. The total initial moles of triiodide introduced ($n_{\text{I3, total}}$) is:
+\begin{equation}
+n_{\text{I3, total}} = C_{\text{I3}} \times V_{\text{I3, total}}
+\end{equation}
+
+The residual moles of triiodide ($n_{\text{I3, unreacted}}$) are titrated by a volume $V_{\text{S2O3}}$ of sodium thiosulfate titrant of standardized concentration $C_{\text{S2O3}}$. From equation (21), two moles of $\text{S}_2\text{O}_3^{2-}$ react with exactly one mole of $\text{I}_3^-$. Thus:
+\begin{equation}
+n_{\text{I3, unreacted}} = \frac{1}{2} n_{\text{S2O3}} = \frac{1}{2} \left( C_{\text{S2O3}} \times V_{\text{S2O3}} \right)
+\end{equation}
+
+The moles of triiodide consumed by the primary analyte reaction ($n_{\text{I3, consumed}}$) are given by the difference:
+\begin{equation}
+n_{\text{I3, consumed}} = n_{\text{I3, total}} - n_{\text{I3, unreacted}} = \left( C_{\text{I3}} \times V_{\text{I3, total}} \right) - \frac{1}{2} \left( C_{\text{S2O3}} \times V_{\text{S2O3}} \right)
+\end{equation}
+
+Let $z_{\text{analyte}}$ be the stoichiometric ratio of analyte to triiodide from equation (18). For $\text{H}_2\text{SO}_3$, $z_{\text{analyte}} = 1$ mole of analyte per 1 mole of $\text{I}_3^-$. For an analyte volume $V_{\text{analyte}}$, the absolute molar concentration $C_{\text{analyte}}$ is derived as:
+\begin{equation}
+C_{\text{analyte}} = \frac{n_{\text{analyte}}}{V_{\text{analyte}}} = \frac{z_{\text{analyte}} \times n_{\text{I3, consumed}}}{V_{\text{analyte}}}
+\end{equation}
+Substituting equation (29) into (30) yields the master analytical back-titration equation:
+\begin{equation}
+C_{\text{analyte}} = \frac{z_{\text{analyte}}}{V_{\text{analyte}}} \left[ C_{\text{I3}} V_{\text{I3, total}} - \frac{1}{2} C_{\text{S2O3}} V_{\text{S2O3}} \right]
+\end{equation}
+
+\subsubsection{Systematic Error and Endpoint Potential Analysis}
+
+The accuracy of iodine back titrations can be compromised by two primary side reactions: air oxidation of iodide and loss of iodine by volatilization.
+
+1. **Air Oxidation of Excess Iodide:** In acidic media, dissolved atmospheric oxygen spontaneously oxidizes iodide to triiodide:
+\begin{equation}
+4\text{I}^-(aq) + \text{O}_2(aq) + 4\text{H}^+(aq) \longrightarrow 2\text{I}_2(aq) + 2\text{H}_2\text{O}(l)
+\end{equation}
+This secondary generation of $\text{I}_2$ increases the apparent $V_{\text{S2O3}}$, leading to a negative systematic error in the calculated analyte concentration $C_{\text{analyte}}$. To mitigate this error, titrations are conducted under an inert atmosphere ($\text{N}_2$ or $\text{Ar}$ purge) or in carbon dioxide-blanketed vessels.
+
+2. **Electrode Potential at Equivalence Point:** The potentiometric tracking of the back-titration endpoint is governed by the cell potential equation. At the thiosulfate equivalence point, the system potential $E_{\text{eq}}$ is determined by the weighted standard potentials of the two participating redox couples:
+\begin{equation}
+E_{\text{eq}} = \frac{n_1 E^\circ_1 + n_2 E^\circ_2}{n_1 + n_2} = \frac{2(0.536 \text{ V}) + 1(0.080 \text{ V})}{2 + 1} = \frac{1.072 + 0.080}{3} = +0.384 \text{ V vs. SHE}
+\end{equation}
+
+\subsection{UV-Vis Spectrophotometry and Beer-Lambert Principles}
+
+UV-Vis Spectrophotometry is an optical analytical technique based on the absorption of electromagnetic radiation in the ultraviolet ($200-400 \text{ nm}$) and visible ($400-800 \text{ nm}$) spectral regions. It provides both quantitative concentration measurements and qualitative structural insights into molecular systems.
+
+\subsubsection{Fundamental Derivation of the Beer-Lambert Law}
+
+Consider a collimated, monochromatic beam of light with initial radiant power $I_0$ entering a homogeneous, non-scattering absorbing medium. The beam traverses an infinitesimal path length $dz$ containing absorbing solute species at molar concentration $C$.
+
+The decrease in radiant intensity $-dI$ across $dz$ is proportional to the local incident intensity $I(z)$, the molar concentration $C$, and the fundamental molecular absorption cross-section $\sigma(\nu)$ at frequency $\nu$:
+\begin{equation}
+-dI(z, \nu) = \sigma(\nu) N_A C \, I(z, \nu) \, dz
+\end{equation}
+where $N_A$ is Avogadro's number ($6.022 \times 10^{23} \text{ mol}^{-1}$). Defining the Naperian absorption coefficient $\alpha(\nu) = \sigma(\nu) N_A C$, equation (34) yields the differential form:
+\begin{equation}
+\frac{dI(z, \nu)}{I(z, \nu)} = -\alpha(\nu) dz = -\sigma(\nu) N_A C \, dz
+\end{equation}
+
+Integrating equation (35) over a finite optical path length $z = 0$ to $z = l$, with $I(0) = I_0$ and $I(l) = I$:
+\begin{equation}
+\int_{I_0}^{I} \frac{dI'}{I'} = -\int_{0}^{l} \sigma(\nu) N_A C \, dz
+\end{equation}
+\begin{equation}
+\ln\left(\frac{I}{I_0}\right) = -\sigma(\nu) N_A C l
+\end{equation}
+Converting from the natural logarithm ($\ln$) to the decadic logarithm ($\log_{10}$) via $\ln(x) = \ln(10) \log_{10}(x)$:
+\begin{equation}
+\log_{10}\left(\frac{I_0}{I}\right
+
+% [AUTO-RECOVERY: Document was truncated due to extreme length]
+\end{document}
