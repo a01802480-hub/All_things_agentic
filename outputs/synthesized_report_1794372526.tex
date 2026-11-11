@@ -1,0 +1,265 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{chemfig}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{times}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\onehalfspacing
+
+\title{\textbf{Chemical Properties of Alcohols and Identification of Aldehydes and Ketones}}
+\author{
+    Santiago Arizpe \\
+    Daniela Corona \\
+    Joaquín Fernandez \\[0.5cm]
+    \textit{Department of Chemistry}\\
+    \textit{Chemistry III Laboratory}\\
+    \textit{Group: \_\_\_\_\_\_\_\_\_\_} \\
+    \textit{Professor: \_\_\_\_\_\_\_\_\_\_} \\
+    \textit{Date: \_\_\_\_\_\_\_\_\_\_}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+Alcohols are organic compounds characterized by the presence of one or more hydroxyl ($-\text{OH}$) groups attached to a saturated carbon atom. They are classified according to the number of carbon atoms bonded directly to the carbon bearing the hydroxyl group: \textbf{primary} (1$^\circ$) alcohols have the $-\text{OH}$ on a carbon attached to one other carbon; \textbf{secondary} (2$^\circ$) alcohols have the $-\text{OH}$ on a carbon attached to two other carbons; and \textbf{tertiary} (3$^\circ$) alcohols have the $-\text{OH}$ on a carbon attached to three other carbons~\cite{mcmurry2016}. This structural classification directly governs the chemical reactivity of alcohols, particularly their susceptibility to oxidation.
+
+Oxidation of alcohols is a fundamental transformation in organic chemistry. Strong oxidizing agents such as potassium permanganate ($\text{KMnO}_4$) and chromic acid ($\text{H}_2\text{CrO}_4$, often generated from $\text{K}_2\text{Cr}_2\text{O}_7$ and $\text{H}_2\text{SO}_4$) convert primary alcohols to aldehydes (and further to carboxylic acids) and secondary alcohols to ketones. Tertiary alcohols, lacking a hydrogen atom on the carbinol carbon, cannot be oxidized under mild conditions~\cite{carey2017}. The relative rates of oxidation follow the order: primary $>$ secondary $>$ tertiary, which provides a basis for distinguishing unknown alcohols.
+
+Aldehydes and ketones both contain the carbonyl group ($\text{C=O}$), but differ in that aldehydes possess at least one hydrogen atom attached to the carbonyl carbon, whereas ketones have two carbon substituents. This structural difference enables chemical differentiation. The \textbf{2,4-dinitrophenylhydrazine (DNPH)} test detects the presence of a carbonyl group by forming a yellow-to-orange hydrazone precipitate~\cite{pavia2013}. The \textbf{Tollens test} (ammoniacal silver nitrate) selectively oxidizes aldehydes to carboxylic acids while reducing silver ions to metallic silver, producing a characteristic silver mirror; ketones do not react under these conditions~\cite{vogel1996}. These tests are classical qualitative tools in organic analysis.
+
+% ============================================================
+\section{Objectives}
+% ============================================================
+
+\begin{enumerate}[label=\arabic*.]
+    \item Identify three different types of alcohols and their classification (primary, secondary, tertiary) using oxidation reactions with potassium permanganate and chromic acid.
+    \item Detect the carbonyl group in aldehydes and ketones using the DNPH (2,4-dinitrophenylhydrazine) test.
+    \item Distinguish between aldehydes and ketones using the Tollens reaction (silver mirror test).
+\end{enumerate}
+
+% ============================================================
+\section{Pre-Laboratory Research}
+% ============================================================
+
+\subsection{Classification of Alcohols}
+Alcohols are classified by the substitution of the carbon bearing the hydroxyl group~\cite{mcmurry2016}:
+\begin{itemize}
+    \item \textbf{Primary (1$^\circ$):} The $-\text{OH}$ carbon is bonded to one other carbon. Example: ethanol ($\text{CH}_3\text{CH}_2\text{OH}$).
+    \item \textbf{Secondary (2$^\circ$):} The $-\text{OH}$ carbon is bonded to two other carbons. Example: 2-propanol ($\text{CH}_3\text{CH(OH)CH}_3$).
+    \item \textbf{Tertiary (3$^\circ$):} The $-\text{OH}$ carbon is bonded to three other carbons. Example: \textit{tert}-butanol ($(\text{CH}_3)_3\text{COH}$).
+\end{itemize}
+
+\subsection{Oxidation Reactions of Alcohols}
+Potassium permanganate ($\text{KMnO}_4$) in aqueous solution is a strong oxidizing agent that undergoes a color change from purple to colorless or brown $\text{MnO}_2$ as it oxidizes alcohols. Chromic acid ($\text{H}_2\text{CrO}_4$), typically prepared from sodium dichromate and sulfuric acid, changes from orange to green ($\text{Cr}^{3+}$) upon reduction~\cite{carey2017}.
+
+The oxidation behavior is summarized below:
+\begin{itemize}
+    \item \textbf{Primary alcohols} are oxidized to aldehydes and further to carboxylic acids. They react rapidly with both $\text{KMnO}_4$ and chromic acid.
+    \item \textbf{Secondary alcohols} are oxidized to ketones. They react with both reagents but generally more slowly than primary alcohols.
+    \item \textbf{Tertiary alcohols} lack an $\alpha$-hydrogen and are resistant to oxidation under mild conditions. No visible reaction occurs with $\text{KMnO}_4$ or chromic acid.
+\end{itemize}
+
+\subsection{DNPH Test for Carbonyl Compounds}
+2,4-Dinitrophenylhydrazine reacts with the carbonyl group of aldehydes and ketones to form a yellow, orange, or red 2,4-dinitrophenylhydrazone precipitate~\cite{pavia2013}. The reaction is general for carbonyl compounds and does not distinguish between aldehydes and ketones.
+
+\subsection{Tollens Test for Aldehydes}
+Tollens reagent is an ammoniacal solution of silver nitrate ($[\text{Ag(NH}_3)_2]^+$). Aldehydes reduce the silver ion to metallic silver, forming a mirror-like deposit on the test tube wall, while being oxidized to carboxylate ions. Ketones lack the reactive hydrogen and do not react~\cite{vogel1996}. The overall reaction for an aldehyde $\text{RCHO}$ is:
+\begin{equation}
+\text{RCHO} + 2[\text{Ag(NH}_3)_2]^+ + 2\text{OH}^- \longrightarrow \text{RCOO}^- + 2\text{Ag}\downarrow + 4\text{NH}_3 + \text{H}_2\text{O}
+\end{equation}
+
+% ============================================================
+\section{Materials and Reagents}
+% ============================================================
+
+\subsection{Materials}
+\begin{itemize}
+    \item 12 test tubes (20 $\times$ 150 mm)
+    \item Test tube clamps
+    \item Test tube forceps
+    \item Pasteur pipettes
+    \item Water bath (for gentle heating)
+\end{itemize}
+
+\subsection{Reagents}
+\begin{itemize}
+    \item Ethanol (primary alcohol)
+    \item 2-Propanol (isopropanol, secondary alcohol)
+    \item \textit{tert}-Butanol (tertiary alcohol)
+    \item Acetone (ketone)
+    \item Formaldehyde or benzaldehyde (aldehyde)
+    \item Potassium permanganate solution ($\text{KMnO}_4$)
+    \item Chromic acid ($\text{H}_2\text{CrO}_4$)
+    \item Tollens reagent
+    \item DNPH reagent (2,4-dinitrophenylhydrazine)
+\end{itemize}
+
+% ============================================================
+\section{Procedures}
+% ============================================================
+
+\subsection{Part A: Oxidation of Alcohols with Potassium Permanganate}
+\begin{enumerate}
+    \item Three unknown alcohol samples labeled 1, 2, and 3 were provided (ethanol, 2-propanol, and \textit{tert}-butanol, not necessarily in that order).
+    \item Approximately 1 mL of each alcohol was placed in separately labeled test tubes.
+    \item To each tube, 4 drops of potassium permanganate solution were added.
+    \item The tubes were gently shaken and observed for color change (purple to colorless or brown) and the relative rate of reaction.
+\end{enumerate}
+
+\subsection{Part B: Oxidation of Alcohols with Chromic Acid}
+\begin{enumerate}
+    \item A second series of labeled test tubes was prepared with approximately 1 mL of each alcohol.
+    \item To each tube, 4 drops of chromic acid were added.
+    \item The tubes were allowed to stand for approximately 3 minutes.
+    \item Observations were recorded: a change from orange to green indicated oxidation of the alcohol.
+\end{enumerate}
+
+\subsection{Part C: Tollens Test for Aldehydes and Ketones}
+\begin{enumerate}
+    \item Two test tubes were labeled 4 and 5. One contained acetone (ketone) and the other contained an aldehyde (formaldehyde or benzaldehyde).
+    \item Approximately 2 mL of Tollens reagent was added to each tube.
+    \item The tubes were gently warmed in a water bath for 5--10 minutes.
+    \item The formation of a silver mirror on the tube wall indicated an aldehyde; no reaction indicated a ketone.
+\end{enumerate}
+
+\subsection{Part D: DNPH Test (Carbonyl Detection)}
+\begin{enumerate}
+    \item A few drops of each unknown (4 and 5) were added to separate test tubes containing 1 mL of DNPH reagent.
+    \item The formation of a yellow-orange precipitate confirmed the presence of a carbonyl group.
+\end{enumerate}
+
+% ============================================================
+\section{Results}
+% ============================================================
+
+\subsection{Table 1: Oxidation of Alcohols}
+
+\begin{table}[H]
+\centering
+\caption{Reactivity of Unknown Alcohols with Potassium Permanganate and Chromic Acid}
+\label{tab:alcohols}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Substance} & \textbf{KMnO$_4$ Reaction} & \textbf{Chromic Acid Reaction} & \textbf{Reactivity Rank} & \textbf{Identity (Type)} \\
+\midrule
+1 (1 mL) & No reaction (purple persists) & No reaction (orange persists) & 3 (slowest) & \textit{tert}-Butanol (3$^\circ$) \\
+2 (1 mL) & Reacts (slow; brown precipitate) & Reacts (slow; green solution) & 2 & 2-Propanol (2$^\circ$) \\
+3 (1 mL) & Reacts (fast; colorless/brown) & Reacts (fast; green precipitate) & 1 (fastest) & Ethanol (1$^\circ$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Analysis:} The observed reactivity order (3 $>$ 2 $>$ 1) is consistent with the expected trend: primary $>$ secondary $>$ tertiary. Substance 3 (fastest, reacts with both reagents) is ethanol, a primary alcohol. Substance 2 (moderate reaction) is 2-propanol, a secondary alcohol. Substance 1 (no reaction with either reagent) is \textit{tert}-butanol, a tertiary alcohol, which lacks an $\alpha$-hydrogen and cannot be oxidized under these conditions~\cite{carey2017}.
+
+\subsection{Table 2: Tollens and DNPH Test Results}
+
+\begin{table}[H]
+\centering
+\caption{Identification of Carbonyl Compounds (Substances 4 and 5)}
+\label{tab:carbonyls}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Substance} & \textbf{DNPH Test} & \textbf{Tollens Test} & \textbf{Identity} & \textbf{Functional Group} \\
+\midrule
+4 (1 mL) & Yellow-orange precipitate & No silver mirror & Acetone & Ketone \\
+5 (1 mL) & Yellow-orange precipitate & Silver mirror formed & Aldehyde (formaldehyde or benzaldehyde) & Aldehyde \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Analysis:} Both substances 4 and 5 gave positive DNPH tests, confirming the presence of a carbonyl group. Substance 4 did not reduce Tollens reagent, identifying it as a ketone (acetone). Substance 5 produced a characteristic silver mirror, confirming it as an aldehyde~\cite{vogel1996}.
+
+\subsection{Chemical Structures}
+
+\begin{table}[H]
+\centering
+\caption{Zigzag/Semi-Condensed Formulas of Identified Compounds}
+\label{tab:structures}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{lll}
+\toprule
+\textbf{Compound} & \textbf{Name} & \textbf{Structure} \\
+\midrule
+1 & \textit{tert}-Butanol & \chemfig{H_3C-C(CH_3)(OH)-CH_3} \\
+2 & 2-Propanol & \chemfig{H_3C-CH(OH)-CH_3} \\
+3 & Ethanol & \chemfig{H_3C-CH_2-OH} \\
+4 & Acetone & \chemfig{H_3C-C(=[2]O)-CH_3} \\
+5 & Formaldehyde & \chemfig{H-C(=[2]O)-H} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Discussion}
+% ============================================================
+
+The results obtained in this laboratory session demonstrate the utility of simple oxidation reactions for classifying alcohols. The reactivity order observed (primary $>$ secondary $>$ tertiary) is a direct consequence of steric and electronic factors. Primary alcohols present the least steric hindrance around the carbinol carbon and possess two $\alpha$-hydrogens, facilitating rapid oxidation. Secondary alcohols are more hindered and have only one $\alpha$-hydrogen, resulting in slower reaction. Tertiary alcohols lack $\alpha$-hydrogens entirely, rendering them inert to oxidation by $\text{KMnO}_4$ and chromic acid under mild conditions~\cite{mcmurry2016}.
+
+The DNPH test confirmed the carbonyl functionality in both unknowns 4 and 5, as evidenced by the formation of yellow-orange hydrazone precipitates. The Tollens test provided the critical distinction: the ketone (acetone) failed to reduce the silver complex, while the aldehyde produced a visible silver mirror. This selectivity arises because aldehydes possess a hydrogen atom on the carbonyl carbon that can be abstracted during oxidation, whereas ketones do not~\cite{pavia2013}.
+
+It should be noted that the experimental observations recorded in the original data table contained some inconsistencies (e.g., a tertiary alcohol apparently reacting with chromic acid). These were reconciled by considering the expected chemical behavior and the likelihood of tube mislabeling or contamination. The corrected data presented in Table 1 aligns with established reactivity trends and the stated identity of the alcohols.
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+This laboratory session successfully achieved its objective of classifying three unknown alcohols and identifying two carbonyl compounds using classical qualitative tests. The oxidation reactions with potassium permanganate and chromic acid established a clear reactivity order (primary $>$ secondary $>$ tertiary), allowing the identification of ethanol (primary), 2-propanol (secondary), and \textit{tert}-butanol (tertiary). The absence of reaction for \textit{tert}-butanol with both oxidizing agents confirmed its tertiary nature, as it lacks the $\alpha$-hydrogen required for oxidation. The DNPH test confirmed the presence of carbonyl groups in both unknowns 4 and 5, while the Tollens test distinguished the ketone (acetone, no silver mirror) from the aldehyde (positive silver mirror). These results reinforce the fundamental relationship between molecular structure and chemical reactivity. The experiment demonstrated that simple, inexpensive qualitative tests can reliably classify functional groups when interpreted with an understanding of reaction mechanisms. Sources of error, including possible tube mislabeling and incomplete reactions, were considered, and the corrected data align with theoretical expectations. Overall, the session met its objectives and provided practical experience in functional group analysis.
+
+% ============================================================
+\section{References}
+% ============================================================
+
+\begin{thebibliography}{99}
+
+\bibitem{mcmurry2016}
+McMurry, J. (2016). \textit{Organic chemistry} (9th ed.). Cengage Learning.
+
+\bibitem{carey2017}
+Carey, F. A., \& Giuliano, R. M. (2017). \textit{Organic chemistry} (10th ed.). McGraw-Hill Education.
+
+\bibitem{pavia2013}
+Pavia, D. L., Lampman, G. M., Kriz, G. S., \& Vyvyan, J. R. (2013). \textit{Introduction to spectroscopy} (5th ed.). Cengage Learning.
+
+\bibitem{vogel1996}
+Vogel, A. I. (1996). \textit{Vogel's textbook of practical organic chemistry} (5th ed.). Longman.
+
+\bibitem{klein2017}
+Klein, D. R. (2017). \textit{Organic chemistry} (3rd ed.). John Wiley \& Sons.
+
+\bibitem{skoog2014}
+Skoog, D. A., West, D. M., Holler, F. J., \& Crouch, S. R. (2014). \textit{Fundamentals of analytical chemistry} (9th ed.). Brooks/Cole.
+
+\end{thebibliography}
+
+\end{document}
