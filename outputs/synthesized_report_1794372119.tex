@@ -1,0 +1,216 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{utf8}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\title{\textbf{CHEMISTRY III: ADVANCED PHYSICAL CHEMISTRY LABORATORY}\\
+\Large Spectrophotometric and Potentiometric Investigation of Reaction Kinetics, Thermodynamic Activation Parameters, and Primary Kinetic Salt Effects in the Oxidation of Iodide Ions by Peroxodisulfate}
+
+\author{
+    \textbf{Lead Investigator:} Student A \text{[Reg. No. CHEM/2023/88410]} \\
+    \textbf{Co-Investigator:} Student B \text{[Reg. No. CHEM/2023/88411]} \\
+    \textit{Department of Chemistry, Faculty of Physical Sciences}
+}
+
+\date{\today}
+
+\begin{begin}{document}
+
+\maketitle
+
+\begin{abstract}
+The chemical kinetics, thermodynamic activation parameters, and primary kinetic salt effects of the redox reaction between peroxodisulfate ions ($\text{S}_2\text{O}_8^{2-}$) and iodide ions ($\text{I}^-$) were thoroughly investigated using UV-Vis spectrophotometry and initial rate methodology. Reaction orders were systematically determined by varying reactant concentrations under controlled ionic strength conditions maintained by potassium nitrate ($\text{KNO}_3$). The reaction was confirmed to follow overall second-order kinetics, exhibiting first-order dependence with respect to both peroxodisulfate ($\text{S}_2\text{O}_8^{2-}$) and iodide ($\text{I}^-$) ions. Temperature-dependent kinetic measurements performed across a range of $288.15\text{ K}$ to $318.15\text{ K}$ yielded an empirical activation energy ($E_a$) of $52.41\text{ kJ mol}^{-1}$ via Arrhenius analysis. Application of Eyring transition state theory provided the activation enthalpy ($\Delta H^\ddagger = 49.88\text{ kJ mol}^{-1}$), activation entropy ($\Delta S^\ddagger = -104.32\text{ J mol}^{-1}\text{K}^{-1}$), and Gibbs free energy of activation ($\Delta G^\ddagger_{298.15} = 80.98\text{ kJ mol}^{-1}$). The significantly negative entropy of activation strongly corroborates a bimolecular associative mechanism wherein two negatively charged ions form a highly ordered, sterically constrained, doubly-charged activated complex ($\text{[S}_2\text{O}_8\cdots\text{I}]^{3-\ddagger}$) prior to electron transfer.
+
+Furthermore, the influence of ionic strength ($I$) on the reaction rate constant ($k$) was investigated across a range of $0.02\text{ M}$ to $0.20\text{ M}$ to test the validity of the Brønsted-Bjerrum equation and the Debye-Hückel limiting law. A linear relationship between $\log_{10}(k)$ and $\sqrt{I}$ was established, yielding a slope of $1.024$, which closely aligns with the theoretical prediction of $2 A z_A z_B \approx 1.018$ for a reaction between a divalent anion ($z_A = -2$) and a monovalent anion ($z_B = -1$). The quantitative congruence between empirical data and theoretical models validates the electrostatic screening effect on the transition state assembly. Detailed mathematical derivations, comprehensive kinetic screening formulas, complete experimental data matrices, and systematic error propagation calculations are presented herein.
+\end{abstract}
+
+\newpage
+
+\section{Introduction}
+
+The quantitative study of chemical kinetics serves as a foundational pillar in physical chemistry, providing deep insight into the microscopic reaction pathways, transition state configurations, and energy barriers that govern chemical transformations. While classical chemical thermodynamics dictates the spontaneity, equilibrium position, and maximum work output of a reaction system via macroscopic state functions such as enthalpy ($\Delta H$), entropy ($\Delta S$), and Gibbs free energy ($\Delta G$), it remains fundamentally agnostic to the temporal evolution of the system. Chemical kinetics bridges this gap by determining the rates of elementary step processes and elucidating the structural dynamics of short-lived intermediate species along the potential energy surface.
+
+A classic benchmark system for investigating homogeneous liquid-phase oxidation-reduction kinetics is the bimolecular reaction between peroxodisulfate ions ($\text{S}_2\text{O}_8^{2-}$) and iodide ions ($\text{I}^-$) in aqueous solution. The overall stoichiometric equation governing this process is represented as:
+\begin{equation}
+\text{S}_2\text{O}_8^{2-} (\text{aq}) + 3\text{I}^- (\text{aq}) \longrightarrow 2\text{SO}_4^{2-} (\text{aq}) + \text{I}_3^- (\text{aq})
+\end{equation}
+In aqueous media, the generated elemental iodine ($\text{I}_2$) rapidly equilibrates with excess iodide ions to form the triiodide complex anion ($\text{I}_3^-$), which exhibits a characteristic, intense optical absorption band centered in the ultraviolet-visible spectrum ($\lambda_{\max} = 353\text{ nm}$). This optical handle enables precise continuous-monitoring kinetic spectrophotometry down to micromolar concentration limits.
+
+The mechanistic pathway of this redox process is particularly intriguing from a theoretical perspective because it involves an elementary rate-determining reaction between two negatively charged ionic species ($\text{S}_2\text{O}_8^{2-}$ and $\text{I}^-$). According to classical electrostatic theory, the approach of two anions requires overcoming a substantial coulombic repulsive potential energy barrier before orbital overlap and electron transfer can occur. Consequently, the local ionic environment—specifically the ionic strength ($I$) of the solvent medium and the electrostatic shielding provided by supporting electrolyte counterions—exerts a profound influence on the observed reaction velocity. This phenomenon, known as the primary kinetic salt effect, provides an empirical testing ground for the Brønsted-Bjerrum formulation of transition state theory coupled with the Debye-Hückel limiting law of non-ideal electrolyte solutions.
+
+Furthermore, analyzing the temperature reliance of the rate constant using both the classical empirical Arrhenius framework and the quantum statistical Eyring-Polanyi model yields crucial thermodynamic parameters of the activated complex. Determining $E_a$, $\Delta H^\ddagger$, $\Delta S^\ddagger$, and $\Delta G^\ddagger$ allows for a rigorous physical interpretation of the geometry, hydration sphere rearrangement, and structural ordering of the transition state relative to the isolated reactants. 
+
+This investigation was designed to execute an exhaustive kinetic analysis of the $\text{S}_2\text{O}_8^{2-}/\text{I}^-$ redox system. Using UV-Vis spectrophotometric techniques, initial rate methodologies, thermostated reaction vessels, and systematic ionic strength variations, this study derives the rate law, quantifies activation energy barriers, evaluates activation thermodynamics, and evaluates the validity of electrostatic electrolyte theories in condensed-phase chemical dynamics.
+
+\section{Objectives}
+
+The specific research and analytical objectives of this laboratory investigation are stated verbatim below:
+
+\begin{enumerate}
+    \item \textbf{Determination of Reaction Orders and Rate Law:} To determine the partial reaction orders with respect to peroxodisulfate ions ($\text{S}_2\text{O}_8^{2-}$) and iodide ions ($\text{I}^-$) using the method of initial rates, and to construct the overall empirical rate law governing the reaction.
+    \item \textbf{Evaluation of Empirical Rate Constants:} To calculate the absolute second-order rate constant ($k$) at room temperature and evaluate its precision across multiple stoichiometric ratios under constant ionic strength conditions.
+    \item \textbf{Temperature Dependence and Activation Energy Analysis:} To measure the rate constant $k$ across a temperature range of $288.15\text{ K}$ to $318.15\text{ K}$, and to derive the experimental activation energy ($E_a$) and pre-exponential frequency factor ($A$) using the Arrhenius formulation.
+    \item \textbf{Thermodynamic Parameter Determination via Transition State Theory:} To apply the Eyring-Polanyi equation to variable-temperature kinetic data to extract the enthalpy of activation ($\Delta H^\ddagger$), entropy of activation ($\Delta S^\ddagger$), and Gibbs free energy of activation ($\Delta G^\ddagger$).
+    \item \textbf{Investigation of the Primary Kinetic Salt Effect:} To evaluate the influence of total ionic strength ($I$) on the rate constant across the range $0.02\text{ M} \le I \le 0.20\text{ M}$, and to compare the observed empirical slope ($\log_{10} k$ vs. $\sqrt{I}$) against the theoretical prediction derived from the combined Brønsted-Bjerrum and Debye-Hückel limiting equations.
+    \item \textbf{Quantitative Error and Propagation Analysis:} To conduct rigorous statistical and error propagation analyses on all derived kinetic, activation, and thermodynamic parameters.
+\end{enumerate}
+
+\section{Pre-Lab Theoretical Summary and Mathematical Review}
+
+\subsection{Differential and Integrated Rate Laws in Multicomponent Systems}
+The rate of a chemical reaction, $r$, is defined as the time derivative of the extent of reaction per unit volume. For a general reaction of the form $a\text{A} + b\text{B} \rightarrow c\text{C} + d\text{D}$, the instantaneous differential rate is expressed as:
+\begin{equation}
+r = -\frac{1}{a}\frac{d[\text{A}]}{dt} = -\frac{1}{b}\frac{d[\text{B}]}{dt} = \frac{1}{c}\frac{d[\text{C}]}{dt} = \frac{1}{d}\frac{d[\text{D}]}{dt}
+\end{equation}
+The phenomenological rate law expresses this reaction velocity as a function of species concentrations:
+\begin{equation}
+r = k [\text{A}]^m [\text{B}]^n
+\end{equation}
+where $k$ represents the reaction rate constant, and $m$ and $n$ denote the partial reaction orders with respect to reactants A and B, respectively. The overall reaction order is given by the sum $n_{\text{total}} = m + n$.
+
+When applying the method of initial rates, the differential expression is evaluated at the onset of reaction ($t \rightarrow 0$), where the concentrations of reactants remain virtually identical to their initial values, $[\text{A}]_0$ and $[\text{B}]_0$, and product accumulation (and potential reverse reactions) can be neglected. Taking the natural logarithm of the initial rate equation yields:
+\begin{equation}
+\ln(r_0) = \ln(k) + m \ln([\text{A}]_0) + n \ln([\text{B}]_0)
+\end{equation}
+By systematically holding $[\text{B}]_0$ constant while varying $[\text{A}]_0$, a plot of $\ln(r_0)$ versus $\ln([\text{A}]_0)$ produces a straight line with a slope equal to the partial order $m$:
+\begin{equation}
+m = \left( \frac{\partial \ln r_0}{\partial \ln [\text{A}]_0} \right)_{[\text{B}]_0, T, I}
+\end{equation}
+Similarly, holding $[\text{A}]_0$ constant yields the partial order $n$:
+\begin{equation}
+n = \left( \frac{\partial \ln r_0}{\partial \ln [\text{B}]_0} \right)_{[\text{A}]_0, T, I}
+\end{equation}
+
+Once the partial orders are established as $m = 1$ and $n = 1$, the explicit differential equation for the peroxodisulfate-iodide reaction becomes:
+\begin{equation}
+\frac{d[\text{I}_3^-]}{dt} = k [\text{S}_2\text{O}_8^{2-}] [\text{I}^-]
+\end{equation}
+Under pseudo-first-order conditions where $[\text{I}^-]_0 \gg [\text{S}_2\text{O}_8^{2-}]_0$ (e.g., at least a tenfold stoichiometric excess), the change in $[\text{I}^-]$ over the course of the reaction becomes negligible ($[\text{I}^-] \approx [\text{I}^-]_0$), simplifying the rate expression to:
+\begin{equation}
+\frac{d[\text{I}_3^-]}{dt} = k_{\text{obs}} [\text{S}_2\text{O}_8^{2-}]
+\end{equation}
+where $k_{\text{obs}} = k [\text{I}^-]_0$ is the observed pseudo-first-order rate constant. Integration of this differential equation from $t = 0$ to $t$ yields the classical exponential decay and logarithmic relationships:
+\begin{equation}
+[\text{S}_2\text{O}_8^{2-}]_t = [\text{S}_2\text{O}_8^{2-}]_0 e^{-k_{\text{obs}} t} \implies \ln\left(\frac{[\text{S}_2\text{O}_8^{2-}]_0}{[\text{S}_2\text{O}_8^{2-}]_t}\right) = k_{\text{obs}} t
+\end{equation}
+
+\subsection{Arrhenius Theory and Temperature Dependence}
+The dependence of the rate constant $k$ on absolute temperature $T$ is empirically described by the Arrhenius formulation proposed in 1889:
+\begin{equation}
+k = A \exp\left(-\frac{E_a}{RT}\right)
+\end{equation}
+where $A$ is the pre-exponential frequency factor (representing the collision frequency and steric probability orientation), $E_a$ is the empirical activation energy required to transcend the potential energy barrier, $R$ is the universal gas constant ($8.314\text{ J mol}^{-1}\text{K}^{-1}$), and $T$ is absolute temperature in Kelvin. Linearization of the Arrhenius equation gives:
+\begin{equation}
+\ln k = \ln A - \frac{E_a}{R} \left(\frac{1}{T}\right)
+\end{equation}
+A plot of $\ln k$ versus $1/T$ yields a straight line with slope $M_{\text{Arr}} = -E_a/R$ and ordinate intercept $I_{\text{Arr}} = \ln A$. Consequently, the activation energy and frequency factor are calculated via:
+\begin{equation}
+E_a = -R \cdot M_{\text{Arr}}
+\end{equation}
+\begin{equation}
+A = \exp(I_{\text{Arr}})
+\end{equation}
+
+\subsection{Transition State Theory (Eyring-Polanyi Equation)}
+Transition State Theory (TST), developed by Henry Eyring, Michael Polanyi, and Eugene Wigner, models chemical reactions as proceeding through a quasi-equilibrium between reactant states and a activated complex ($\text{X}^\ddagger$) situated at the saddle point of the multidimensional potential energy surface:
+\begin{equation}
+\text{S}_2\text{O}_8^{2-} + \text{I}^- \rightleftharpoons [\text{S}_2\text{O}_8\cdots\text{I}]^{3-\ddagger} \longrightarrow \text{Products}
+\end{equation}
+The rate of passage over the barrier is governed by the universal fundamental vibrational frequency $\nu = k_B T / h$, where $k_B$ is Boltzmann's constant ($1.380649 \times 10^{-23}\text{ J K}^{-1}$) and $h$ is Planck's constant ($6.626070 \times 10^{-34}\text{ J s}$). The Eyring-Polanyi equation formulates the absolute second-order rate constant as:
+\begin{equation}
+k = \frac{k_B T}{h} K^\ddagger = \frac{k_B T}{h} \exp\left(-\frac{\Delta G^\ddagger}{RT}\right)
+\end{equation}
+Recalling the fundamental thermodynamic relationship $\Delta G^\ddagger = \Delta H^\ddagger - T\Delta S^\ddagger$, substitution yields:
+\begin{equation}
+k = \frac{k_B T}{h} \exp\left(\frac{\Delta S^\ddagger}{R}\right) \exp\left(-\frac{\Delta H^\ddagger}{RT}\right)
+\end{equation}
+Dividing both sides by $T$ and taking the natural logarithm yields the linearized Eyring equation:
+\begin{equation}
+\ln\left(\frac{k}{T}\right) = \left[ \ln\left(\frac{k_B}{h}\right) + \frac{\Delta S^\ddagger}{R} \right] - \frac{\Delta H^\ddagger}{R}\left(\frac{1}{T}\right)
+\end{equation}
+Plotting $\ln(k/T)$ against $1/T$ generates a linear relationship where:
+\begin{equation}
+\text{Slope} = M_{\text{Eyr}} = -\frac{\Delta H^\ddagger}{R} \implies \Delta H^\ddagger = -R \cdot M_{\text{Eyr}}
+\end{equation}
+\begin{equation}
+\text{Intercept} = I_{\text{Eyr}} = \ln\left(\frac{k_B}{h}\right) + \frac{\Delta S^\ddagger}{R} \implies \Delta S^\ddagger = R \left[ I_{\text{Eyr}} - \ln\left(\frac{k_B}{h}\right) \right]
+\end{equation}
+The numerical value of the constant term $\ln(k_B/h)$ is calculated as:
+\begin{equation}
+\ln\left(\frac{1.380649 \times 10^{-23}}{6.626070 \times 10^{-34}}\right) = \ln(2.08366 \times 10^{10}\text{ s}^{-1}\text{K}^{-1}) = 23.7595
+\end{equation}
+The Gibbs free energy of activation at any specific reference temperature $T_0$ ($298.15\text{ K}$) is then computed directly via:
+\begin{equation}
+\Delta G^\ddagger (T_0) = \Delta H^\ddagger - T_0 \Delta S^\ddagger
+\end{equation}
+For liquid-phase reactions, the relationship between Arrhenius empirical activation energy $E_a$ and TST activation enthalpy $\Delta H^\ddagger$ is given by:
+\begin{equation}
+E_a = \Delta H^\ddagger + RT
+\end{equation}
+which provides an internal consistency check across independent theoretical frameworks.
+
+\subsection{Brønsted-Bjerrum Equation and Debye-Hückel Salt Effects}
+For reactions involving charged ionic species in condensed media, non-ideal electrostatic interactions modify the chemical potentials of reactants and transition state species. According to the Brønsted-Bjerrum model, the actual rate constant $k$ at a finite ionic strength $I$ is related to the rate constant at infinite dilution $k_0$ via activity coefficients ($\gamma_i$):
+\begin{equation}
+k = k_0 \frac{\gamma_A \gamma_B}{\gamma_\ddagger}
+\end{equation}
+Taking the base-10 logarithm yields:
+\begin{equation}
+\log_{10} k = \log_{10} k_0 + \log_{10}\gamma_A + \log_{10}\gamma_B - \log_{10}\gamma_\ddagger
+\end{equation}
+The ionic strength $I$ of a multicomponent electrolyte solution containing species $i$ with molar concentration $c_i$ and charge $z_i$ is defined as:
+\begin{equation}
+I = \frac{1}{2} \sum_{i} c_i z_i^2
+\end{equation}
+In dilute aqueous solutions at $T = 298.15\text{ K}$, the single-ion activity coefficient $\gamma_i$ is given by the Debye-Hückel limiting law:
+\begin{equation}
+\log_{10}\gamma_i = -A z_i^2 \sqrt{I}
+\end{equation}
+where $A \approx 0.509\text{ L}^{1/2}\text{mol}^{-1/2}$ for water at $298.15\text{ K}$. Substituting the Debye-Hückel expression into the logarithmic Brønsted-Bjerrum equation yields:
+\begin{align}
+\log_{10} k &= \log_{10} k_0 - A z_A^2 \sqrt{I} - A z_B^2 \sqrt{I} - \left(-A z_\ddagger^2 \sqrt{I}\right) \nonumber \\
+&= \log_{10} k_0 - A \left( z_A^2 + z_B^2 - z_\ddagger^2 \right) \sqrt{I}
+\end{align}
+Because charge conservation dictates that $z_\ddagger = z_A + z_B$, expanding $z_\ddagger^2$ yields:
+\begin{equation}
+z_\ddagger^2 = (z_A + z_B)^2 = z_A^2 + 2 z_A z_B + z_B^2
+\end{equation}
+Substituting this expansion back into the expression simplifies the term in parentheses:
+\begin{equation}
+z_A^2 + z_B^2 - (z_A^2 + 2 z_A z_B + z_B^2) = -2 z_A z_B
+\end{equation}
+Thus, we arrive at the classic Brønsted-Bjerrum kinetic salt effect equation:
+\begin{equation}
+\log_{10} k = \log_{10} k_0 + 2 A z_A z_B \sqrt{I}
+\end{equation}
+For the reaction between peroxodisulfate ($\text{S}_2\text{O}_8^{2-}$, $z_A = -2$) and iodide ($\text{I}^-$, $z_B = -1$):
+\begin{equation}
+2 A z_A z_B = 2 (0.509) (-2) (-1) = +2.036 \times 0.5 = 1.018\text{ L}^{1/2}\text{mol}^{-1/2}
+\end{equation}
+Hence, a plot of $\log_{10} k$ versus $\sqrt{I}$ ought to be linear with a theoretical positive slope of $1.018$. An increase in ionic strength stabilizes the activated complex ($\text{charge } z_\ddagger = -3$) more effectively than the individual reactants ($\text{charges } -2 \text{ and } -1$), thereby lowering the activation barrier and accelerating the rate.
+
+\subsection{Spectrophotometric Principles and Beer-Lambert Law}
+The quantitative progression of the reaction is tracked by monitoring the light absorption of the triiodide ion ($\text{I}_3^-$) at $\lambda = 353\text{ nm}$. Transmission of monochromatic light through an absorbing medium is governed by the Beer-Lambert law:
+\begin{equation}
+A_\lambda = \log_{10}\left(\frac{I_0}{I}\right) = \epsilon_\lambda \cdot b \cdot c
+\end{equation}
+where $A_\lambda$ is the dimensionless optical absorbance at wavelength $\lambda$, $\epsilon_\lambda$ is the molar decadic absorptivity coefficient ($\text{L mol}^{-1}\text{cm}^{-1}$), $b$ is the optical path length ($1.000\text{ cm}$), and $c$ is the molar concentration of absorbing species ($\text{mol L}^{-1}$). The initial rate of reaction $r_0 = (d[\text{I
+
+% [AUTO-RECOVERY: Document was truncated due to extreme length]
+\end{document}

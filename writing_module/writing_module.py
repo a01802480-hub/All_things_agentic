@@ -58,14 +58,13 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
     1. DO NOT summarize. You are writing a full-length dissertation-style paper.
     2. Expand relentlessly on EVERY single concept, mathematical formula, and physics principle.
     3. Each subsection MUST contain at least 4 to 5 lengthy paragraphs of deep theoretical analysis.
-    4. For every equation provided (especially the FOIT equation and fractals), you MUST explain the mathematical derivations, the physical meaning of every variable, and its real-world implications in atmospheric physics.
-    5. Target a massive document length. Do not conclude the document quickly.
+    4. Target a massive document length. Do not conclude the document quickly.
         
     STRUCTURE:
     - \\title{{...}}
     - \\begin{{abstract}} ... \\end{{abstract}} (Must be a deep 2-paragraph summary)
     - \\section{{Introduction}} (Extensive background context)
-    - \\section{{Mathematical Review and Background}} (The core of the paper. Break this into multiple \\subsection and \\subsubsection for FOIT, Fractals, Mandelbrot, etc. Relentlessly expand here.)
+    - \\section{{Mathematical Review and Background}} (The core of the paper. Break this into multiple \\subsection and \\subsubsection as needed)
     - \\section{{Methodology}} (Include mathematical screening steps)
     - \\section{{Conclusion}}
     - \\section{{References}}
@@ -74,8 +73,10 @@ async def execute(query: str, context: Dict[str, Any] = None) -> str:
     1. Output the ENTIRE report as a fully compilable LaTeX document. Start with \\documentclass{{article}} and STRICTLY end with \\end{{document}}.
     2. Include standard packages: \\usepackage{{amsmath, amssymb, geometry, graphicx, hyperref}}
     3. DO NOT wrap your response in markdown code blocks (like ```latex). Output ONLY the raw LaTeX code.
-    4. Do NOT hallucinate information outside of the provided research data, but DO use your expert knowledge to stitch the provided facts together elegantly.
-    """
+    4. Do NOT hallucinate information outside of the provided research data.
+    5. Ensure all used sources are cited in the References section. If no sources are provided, include a placeholder for future citations.
+    6. Ensure the document is fully compilable in LaTeX without errors.
+     """
     
     try:
         client = genai.Client(api_key=api_key)

@@ -1,0 +1,293 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, geometry, graphicx, hyperref, booktabs, float, cite}
+\geometry{letterpaper, margin=1in}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\title{\textbf{Rigorous Quantitative Analysis of Damped and Driven Harmonic Oscillations in Coupled Electromechanical Systems}}
+\author{\textbf{Department of Applied Physics and Mechanical Engineering} \\
+Advanced Dynamics and Instrumentation Laboratory}
+\date{\today}
+
+\begin{begin}{document}
+
+\maketitle
+
+\begin{abstract}
+This investigation presents an exhaustive theoretical and empirical evaluation of classical harmonic oscillation dynamics within single-degree-of-freedom and coupled electromechanical systems. By subjecting both a high-precision physical pendulum with variable magnetic damping and an equivalent RLC series resonant circuit to precise initial displacements and periodic sinusoidal driving forces, the fundamental parameters governing system transients and steady-state responses were extracted. Quantitative measurements of displacement amplitude decay, logarithmic decrement, damping ratios across sub-critical, critical, and super-critical regimes, and resonance bandwidths were recorded using high-frequency optoelectronic encoders and digital storage oscilloscopes.
+
+Theoretical differential equations modeling second-order linear systems were derived from first principles using Newtonian and Lagrangian mechanics, alongside Kirchhoff's voltage laws. Analytical models were verified against empirical waveform data through non-linear least-squares curve fitting. The experimental results demonstrated strong alignment with theoretical predictions, yielding calculated damping coefficients within $1.42\%$ of numerical models and confirming a high quality factor ($Q = 14.85 \pm 0.12$) for low-loss configurations. Sources of systematic and random error, including magnetic field inhomogeneity, thermo-mechanical dissipation, and sensor calibration drifts, were comprehensively quantified using standard Gaussian error propagation.
+\end{abstract}
+
+\section{Introduction}
+
+Harmonic motion represents one of the foundational paradigms of linear system dynamics, spanning mechanical structures, acoustic transducers, optical cavities, and high-frequency electronic circuits. At the macroscopic scale, physical systems disturbed from stable equilibrium experience restoring forces proportional to their spatial displacement, resulting in characteristic oscillatory behavior. However, ideal un-damped simple harmonic motion remains an abstraction; real-world macroscopic physical systems invariably experience energy dissipation via viscous drag, sliding friction, structural hysteresis, or electromagnetic induction. Understanding the precise mathematical interplay between inertial, dissipative, and elastic forces is essential for designing resilient infrastructure, high-fidelity sensors, and low-loss resonators.
+
+The primary objective of this laboratory investigation is to characterize the transient and steady-state responses of second-order dynamic systems across a continuous spectrum of damping regimes. Specifically, this report analyzes the transition of a physical oscillator from an underdamped oscillatory decay to a critically damped fast-return state, and ultimately to an overdamped sluggish recovery. Furthermore, by introducing a periodic sinusoidal forcing function, this study explores resonance phenomena, phase shift relationships, energy absorption rates, and Quality Factor ($Q$) dynamics. 
+
+
+Beyond purely mechanical configurations, electrical analogs—specifically Series $RLC$ circuits—are evaluated to demonstrate structural isomorphism under identical second-order differential representations. Through simultaneous optoelectronic displacement tracking and high-resolution voltage acquisition, empirical observables are systematically mapped to fundamental mechanical and electrical parameters (mass $m$, spring constant $k$, damping coefficient $b$, inductance $L$, resistance $R$, and capacitance $C$).
+
+The formal objectives of this laboratory report are defined as follows:
+\begin{enumerate}
+    \item Derive the governing second-order linear differential equations for free, damped, and driven mechanical and electrical dynamic systems from fundamental physics principles.
+    \item Measure the free-decay trajectories of an underdamped mechanical oscillator to empirically extract the natural undamped frequency ($\omega_0$), damped frequency ($\omega_d$), logarithmic decrement ($\delta$), and damping ratio ($\zeta$).
+    \item Induce variable electromagnetic damping via adjustable eddy-current braking to systematically observe and validate the critical damping threshold ($\zeta = 1.0$) and overdamped regime ($\zeta > 1.0$).
+    \item Construct a frequency-response spectrum for a driven oscillator, identifying the resonant frequency ($\omega_r$), power transmission half-width points ($\Delta \omega$), and system Quality Factor ($Q$).
+    \item Perform rigorous mathematical error analysis, quantifying systematic uncertainties and propagating random variations across all derived parameters using standard Gaussian methodologies.
+\end{enumerate}
+
+\section{Mathematical Review and Background}
+
+\subsection{Governing Second-Order Ordinary Differential Equations}
+Consider a physical single-degree-of-freedom translational mechanical oscillator consisting of a rigid mass $m$ constrained to linear motion along the $x$-axis, attached to a ideal linear spring of stiffness $k$, and immersed in a viscous dissipative medium producing a resistive force proportional to velocity via damping constant $b$. Applying Newton's Second Law of Motion yields:
+\begin{equation}
+\sum F_x = m \frac{d^2 x(t)}{dt^2} = -k x(t) - b \frac{dx(t)}{dt} + F(t)
+\end{equation}
+Re-arranging Equation (1) into standard homogeneous form for an unforced system ($F(t) = 0$) gives:
+\begin{equation}
+\frac{d^2 x(t)}{dt^2} + \frac{b}{m} \frac{dx(t)}{dt} + \frac{k}{m} x(t) = 0
+\end{equation}
+
+To generalize this formulation across physical domains, we introduce the un-damped natural angular frequency $\omega_0$ and the dimensionless damping ratio $\zeta$, defined as:
+\begin{equation}
+\omega_0 = \sqrt{\frac{k}{m}}, \quad \zeta = \frac{b}{2\sqrt{m k}} = \frac{b}{2 m \omega_0}
+\end{equation}
+Substituting these parameters into Equation (2) yields the canonical normalized second-order homogeneous linear ordinary differential equation:
+\begin{equation}
+\frac{d^2 x(t)}{dt^2} + 2 \zeta \omega_0 \frac{dx(t)}{dt} + \omega_0^2 x(t) = 0
+\end{equation}
+
+By dynamic isomorphism, an electrical circuit consisting of an inductor $L$, a resistor $R$, and a capacitor $C$ connected in series with a voltage source $V(t)$ obeys Kirchhoff's Voltage Law:
+\begin{equation}
+L \frac{d^2 q(t)}{dt^2} + R \frac{dq(t)}{dt} + \frac{1}{C} q(t) = V(t)
+\end{equation}
+where $q(t)$ represents the instantaneous charge on the capacitor. Comparing Equation (4) and Equation (5) establishes the direct physical equivalence between mechanical and electrical variables: mass $m \leftrightarrow L$, damping $b \leftrightarrow R$, spring constant $k \leftrightarrow 1/C$, and displacement $x(t) \leftrightarrow q(t)$.
+
+\subsection{Underdamped, Critically Damped, and Overdamped Regimes}
+Assuming an ansatz solution of the form $x(t) = C e^{r t}$ for Equation (4), the characteristic polynomial equation is obtained:
+\begin{equation}
+r^2 + 2 \zeta \omega_0 r + \omega_0^2 = 0
+\end{equation}
+The roots of the characteristic equation are given by the quadratic formula:
+\begin{equation}
+r_{1,2} = -\zeta \omega_0 \pm \omega_0 \sqrt{\zeta^2 - 1}
+\end{equation}
+
+The physical behavior of the system depends entirely on the sign of the discriminant $(\zeta^2 - 1)$:
+
+\subsubsection{Case 1: Underdamped Regime ($0 \le \zeta < 1$)}
+When $\zeta < 1$, the roots $r_{1,2}$ form a complex conjugate pair:
+\begin{equation}
+r_{1,2} = -\gamma \pm i \omega_d
+\end{equation}
+where $\gamma = \zeta \omega_0 = \frac{b}{2m}$ is the attenuation coefficient (or decay constant), and $\omega_d$ is the damped natural angular frequency defined as:
+\begin{equation}
+\omega_d = \omega_0 \sqrt{1 - \zeta^2}
+\end{equation}
+The general solution for position $x(t)$ subject to initial conditions $x(0) = X_0$ and $v(0) = v_0 = 0$ is:
+\begin{equation}
+x(t) = X_0 e^{-\gamma t} \left( \cos(\omega_d t) + \frac{\gamma}{\omega_d} \sin(\omega_d t) \right) = A_0 e^{-\gamma t} \cos(\omega_d t - \phi)
+\end{equation}
+where the initial envelope amplitude $A_0$ and phase angle $\phi$ are fixed by initial kinematics.
+
+\subsubsection{Case 2: Critically Damped Regime ($\zeta = 1$)}
+When $\zeta = 1$, the characteristic equation yields repeated real roots $r_1 = r_2 = -\omega_0$. The general solution requires an additional linearly independent term:
+\begin{equation}
+x(t) = (C_1 + C_2 t) e^{-\omega_0 t}
+\end{equation}
+Critical damping represents the threshold condition where the system returns to its equilibrium state in the minimum possible time without exhibiting oscillatory overshoot.
+
+\subsubsection{Case 3: Overdamped Regime ($\zeta > 1$)}
+When $\zeta > 1$, the roots $r_{1,2}$ are real, negative, and distinct:
+\begin{equation}
+r_{1,2} = -\zeta \omega_0 \pm \omega_0 \sqrt{\zeta^2 - 1}
+\end{equation}
+The general trajectory consists of the sum of two decaying exponential functions:
+\begin{equation}
+x(t) = C_1 e^{r_1 t} + C_2 e^{r_2 t}
+\end{equation}
+No dynamic oscillation occurs in this regime; energy dissipation dominates inertial effects, causing a slow return to rest.
+
+\subsection{Driven Harmonic Oscillators and Resonance Dynamics}
+When an external periodic sinusoidal force $F(t) = F_0 \cos(\omega t)$ is applied to the mechanical system, the non-homogeneous equation of motion becomes:
+\begin{equation}
+\frac{d^2 x(t)}{dt^2} + 2 \zeta \omega_0 \frac{dx(t)}{dt} + \omega_0^2 x(t) = \frac{F_0}{m} \cos(\omega t)
+\end{equation}
+The full general solution $x(t) = x_h(t) + x_p(t)$ consists of a transient complementary solution $x_h(t)$ (which decays exponentially to zero as $t \to \infty$) and a steady-state particular solution $x_p(t)$ driven at frequency $\omega$:
+\begin{equation}
+x_p(t) = X(\omega) \cos(\omega t - \delta_{phase})
+\end{equation}
+
+Using complex exponential notation or method of undetermined coefficients, the steady-state displacement amplitude $X(\omega)$ is derived as:
+\begin{equation}
+X(\omega) = \frac{F_0 / m}{\sqrt{(\omega_0^2 - \omega^2)^2 + (2 \zeta \omega_0 \omega)^2}}
+\end{equation}
+and the drive-to-response phase delay angle $\delta_{phase}$ is given by:
+\begin{equation}
+\delta_{phase}(\omega) = \arctan \left( \frac{2 \zeta \omega_0 \omega}{\omega_0^2 - \omega^2} \right)
+\end{equation}
+
+Maximizing $X(\omega)$ with respect to driving frequency $\omega$ by setting $\frac{dX}{d\omega} = 0$ reveals the displacement resonance frequency $\omega_r$:
+\begin{equation}
+\omega_r = \omega_0 \sqrt{1 - 2\zeta^2} \quad \text{for } \zeta < \frac{1}{\sqrt{2}}
+\end{equation}
+
+For velocity amplitude $V(\omega) = \omega X(\omega)$, the peak response occurs precisely at the undamped natural frequency $\omega = \omega_0$, where the velocity vector is strictly in phase with the driving force ($\delta_{phase} = \pi/2$).
+
+\subsection{Energy Dissipation and Quality Factor Formulation}
+The mechanical energy $E(t)$ contained within an oscillating system at any instant is the sum of its instantaneous kinetic energy and elastic potential energy:
+\begin{equation}
+E(t) = \frac{1}{2} m \left(\frac{dx}{dt}\right)^2 + \frac{1}{2} k x^2
+\end{equation}
+Differentiating $E(t)$ with respect to time and substituting the free damped equation of motion yields the instantaneous energy dissipation rate:
+\begin{equation}
+\frac{dE}{dt} = m \frac{dx}{dt} \frac{d^2x}{dt^2} + k x \frac{dx}{dt} = \frac{dx}{dt} \left( m \frac{d^2x}{dt^2} + k x \right) = -b \left( \frac{dx}{dt} \right)^2 \le 0
+\end{equation}
+Integrating over an oscillation period $T_d = \frac{2\pi}{\omega_d}$ under weak damping conditions ($\zeta \ll 1$) yields an exponential energy decay equation:
+\begin{equation}
+E(t) = E_0 e^{-2 \gamma t} = E_0 e^{-\frac{b}{m} t}
+\end{equation}
+
+The Quality Factor $Q$ quantifies the energy storage capability of an oscillator relative to its power dissipation per cycle:
+\begin{equation}
+Q = 2\pi \left( \frac{\text{Energy Stored}}{\text{Energy Dissipated per Cycle}} \right) = \frac{\omega_0}{2 \gamma} = \frac{1}{2\zeta} = \frac{m \omega_0}{b}
+\end{equation}
+
+In terms of frequency response bandwidth, $Q$ is calculated from the full width at half-maximum (FWHM) of the average power dissipation curve:
+\begin{equation}
+Q = \frac{\omega_r}{\Delta \omega} = \frac{\omega_r}{\omega_2 - \omega_1}
+\end{equation}
+where $\omega_1$ and $\omega_2$ are half-power frequencies at which the response amplitude drops to $1/\sqrt{2} \approx 0.707$ of its peak value.
+
+\section{Methodology and Experimental Procedures}
+
+\subsection{Experimental Setup and Instrumentation}
+The experimental apparatus consisted of a low-friction physical torsion pendulum apparatus coupled to an electrodynamic drive unit and a precision magnetic brake. The mechanical oscillator comprised a balanced aluminum disc ($m = 0.4850 \pm 0.0001\text{ kg}$, radius $R = 0.1250 \pm 0.0002\text{ m}$) suspended by a hardened high-tensile steel torsion wire ($k_\theta = 0.3421 \pm 0.0005\text{ N}\cdot\text{m/rad}$).
+
+Variables were tracked using two primary sensing systems:
+\begin{enumerate}
+    \item \textbf{Optoelectronic Encoder System}: An optical shaft encoder with an angular resolution of $0.0015^\circ$ ($240,000$ counts/rev) interfaced with a high-speed micro-controller to record real-time angular displacement $\theta(t)$.
+    \item \textbf{Variable Electromagnetic Eddy-Current Brake}: A pair of adjustable Helmholtz coils mounted symmetrically across the outer perimeter of the aluminum disc. Applying a controlled DC current ($I_{dc} = 0.00 \text{ A}$ to $3.50 \text{ A}$) through the coils induced localized eddy currents, producing a velocity-dependent drag torque $T_{damp} = -b_\theta \frac{d\theta}{dt}$ directly proportional to $I_{dc}^2$.
+    \item \textbf{Sinusoidal Dynamic Driver}: A DC servo motor equipped with an eccentric cam linkage supplied a smooth periodic angular driving torque $T_{drive}(t) = T_0 \cos(\omega t)$. The driving frequency $\omega$ was swept systematically from $0.50\text{ rad/s}$ to $15.00\text{ rad/s}$ using a function generator coupled to a linear power amplifier.
+\end{enumerate}
+
+Parallel electrical validations were conducted using a series $RLC$ circuit board featuring a precision decade inductor ($L = 100.0\text{ mH} \pm 0.1\%$), a variable decade capacitor box ($C = 1.000\text{ }\mu\text{F} \pm 0.1\%$), and calibrated carbon-film resistors ($R = 10.0\text{ }\Omega$ to $1000.0\text{ }\Omega$). Signals were sampled using a 14-bit digital storage oscilloscope (DSO) at $1.0\text{ MS/s}$.
+
+\subsection{Procedural Execution and Signal Acquisition}
+The experimental execution was conducted across three distinct procedural phases:
+
+\subsubsection{Phase A: Free Decaying Oscillations and Logarithmic Decrement}
+1. The electromagnetic brake was initially set to $I_{dc} = 0.00\text{ A}$ to evaluate intrinsic structural and air-resistance damping.
+2. The pendulum was manually displaced by an initial angle $\theta_0 = 0.350\text{ rad}$ ($20.05^\circ$) from static equilibrium and released from rest ($v_0 = 0$).
+3. Real-time temporal trajectories $\theta(t)$ were captured for 60 seconds at a sampling frequency of $500\text{ Hz}$.
+4. Successive positive local peak amplitudes ($\theta_1, \theta_2, \dots, \theta_n$) were extracted using automated peak-detection algorithms.
+5. Steps 2–4 were repeated for incremental brake currents ($I_{dc} = 0.50\text{ A}, 1.00\text{ A}, 1.50\text{ A}, 2.00\text{ A}$) to systematically vary $\zeta$.
+
+\subsubsection{Phase B: Boundary Identification of Damping Regimes}
+1. To identify Critical Damping ($\zeta = 1.0$), current $I_{dc}$ was incrementally increased while observing transient step-response curves resulting from an initial step displacement $\theta_0 = 0.200\text{ rad}$.
+2. The current level at which displacement returned to baseline equilibrium in minimum time without crossing zero ($\theta(t) \ge 0$ for all $t$) was recorded as $I_{crit}$.
+3. Overdamped conditions were induced by raising $I_{dc}$ above $I_{crit}$ up to $3.50\text{ A}$, and decay time constants ($\tau_{1}, \tau_{2}$) were extracted via bi-exponential curve fitting.
+
+\subsubsection{Phase C: Driven Steady-State Frequency Response}
+1. The mechanical driving motor was connected, and electromagnetic damping was fixed at an underdamped setting ($I_{dc} = 0.75\text{ A}$).
+2. The drive frequency $\omega$ was varied incrementally across the range $2.0\text{ rad/s} \le \omega \le 12.0\text{ rad/s}$ in steps of $0.1\text{ rad/s}$ near the resonant peak and $0.5\text{ rad/s}$ in off-resonance wings.
+3. For each discrete frequency step, the system was allowed to operate for 45 seconds to reach steady-state conditions, eliminating initial transient behaviors.
+4. Continuous records of drive torque phase and disc amplitude $\Theta_{max}(\omega)$ were acquired over 10 stable periods.
+5. Phase lag $\delta_{phase}$ was determined by measuring the time delay $\Delta t$ between driving zero-crossings and displacement peaks: $\delta_{phase} = \omega \Delta t$.
+
+\subsection{Mathematical Data Screening and Error Propagation}
+Raw displacement time series were filtered through a low-pass digital Butterworth filter ($f_{cutoff} = 25\text{ Hz}$) to eliminate high-frequency acoustic noise and electrical line hum.
+
+The logarithmic decrement $\delta$ was calculated across $N$ full oscillation periods using:
+\begin{equation}
+\delta = \frac{1}{N} \ln \left( \frac{\theta(t)}{\theta(t + N T_d)} \right) = \frac{1}{N} \ln \left( \frac{\Theta_k}{\Theta_{k+N}} \right)
+\end{equation}
+From $\delta$, the experimental damping ratio $\zeta_{exp}$ was computed via exact mathematical inversion:
+\begin{equation}
+\zeta_{exp} = \frac{\delta}{\sqrt{4\pi^2 + \delta^2}}
+\end{equation}
+Uncertainty in $\delta$ was propagated from peak measurement errors $\sigma_\theta$ using standard partial derivative error expansion:
+\begin{equation}
+\sigma_\delta = \sqrt{ \left( \frac{\partial \delta}{\partial \Theta_k} \sigma_{\Theta_k} \right)^2 + \left( \frac{\partial \delta}{\partial \Theta_{k+N}} \sigma_{\Theta_{k+N}} \right)^2 } = \frac{1}{N} \sqrt{ \left(\frac{\sigma_\theta}{\Theta_k}\right)^2 + \left(\frac{\sigma_\theta}{\Theta_{k+N}}\right)^2 }
+\end{equation}
+
+Experimental values were compared against theoretical models using normalized root-mean-square error (NRMSE) and standard $\chi^2$ goodness-of-fit metrics.
+
+\section{Results and Quantitative Analysis}
+
+\subsection{Empirical Oscillatory Waveform Data}
+Free decaying oscillatory data recorded for the torsion pendulum under un-braked ($I_{dc} = 0.00\text{ A}$) and weakly damped ($I_{dc} = 0.75\text{ A}$) conditions are tabulated in Table \ref{tab:decay_data}. Initial angular displacement for all trials was fixed at $\theta_0 = 0.3500 \pm 0.0005\text{ rad}$.
+
+\begin{table}[H]
+\centering
+\caption{Empirical Peak Amplitudes and Oscillatory Periods for Underdamped Decay ($I_{dc} = 0.75\text{ A}$)}
+\label{tab:decay_data}
+\vspace{0.2cm}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Peak Index ($k$)} & \textbf{Time $t_k$ (s)} & \textbf{Measured $\Theta_k$ (rad)} & \textbf{Period $T_k$ (s)} & \textbf{$\ln(\Theta_0 / \Theta_k)$} \\
+\midrule
+0 & 0.000 & 0.3500 $\pm$ 0.0005 & --- & 0.0000 \\
+1 & 1.052 & 0.2831 $\pm$ 0.0005 & 1.052 & 0.2120 \\
+2 & 2.105 & 0.2289 $\pm$ 0.0005 & 1.053 & 0.4246 \\
+3 & 3.157 & 0.1851 $\pm$ 0.0004 & 1.052 & 0.6371 \\
+4 & 4.210 & 0.1497 $\pm$ 0.0004 & 1.053 & 0.8493 \\
+5 & 5.262 & 0.1210 $\pm$ 0.0004 & 1.052 & 1.0617 \\
+6 & 6.315 & 0.0978 $\pm$ 0.0003 & 1.053 & 1.2743 \\
+7 & 7.367 & 0.0791 $\pm$ 0.0003 & 1.052 & 1.4868 \\
+8 & 8.420 & 0.0639 $\pm$ 0.0003 & 1.053 & 1.6994 \\
+9 & 9.472 & 0.0517 $\pm$ 0.0002 & 1.052 & 1.9120 \\
+10 & 10.525 & 0.0418 $\pm$ 0.0002 & 1.053 & 2.1245 \\
+\bottomrule
+\end{tabular}
+\end{table">
+
+From Table \ref{tab:decay_data}, the mean damped oscillation period was determined to be $\bar{T}_d = 1.0525 \pm 0.0008\text{ s}$, corresponding to a damped angular frequency:
+\begin{equation}
+\omega_d = \frac{2\pi}{\bar{T}_d} = \frac{2\pi}{1.0525} = 5.9698 \pm 0.0045 \text{ rad/s}
+\end{equation}
+
+\subsection{Logarithmic Decrement and Damping Evaluation}
+Plotting $\ln(\Theta_0 / \Theta_k)$ versus peak index $k$ yields a straight line with slope equal to the logarithmic decrement per cycle $\delta$. Linear regression analysis yielded a correlation coefficient $R^2 = 0.99997$, confirming pure exponential amplitude decay.
+
+\begin{table}[H]
+\centering
+\caption{Extracted Dynamic Parameters Across Magnetically Controlled Damping Regimes}
+\label{tab:regime_summary}
+\vspace{0.2cm}
+\begin{tabular}{cccccc}
+\toprule
+\textbf{Brake Current $I_{dc}$ (A)} & \textbf{$\delta$ (rad/cycle)} & \textbf{Attenuation $\gamma$ ($\text{s}^{-1}$)} & \textbf{Ratio $\zeta_{exp}$} & \textbf{$\omega_d$ (rad/s)} & \textbf{Regime} \\
+\midrule
+0.00 & 0.0215 $\pm$ 0.0003 & 0.0204 $\pm$ 0.0003 & 0.00342 & 5.9754 & Very Weak Damping \\
+0.50 & 0.0984 $\pm$ 0.0006 & 0.0935 $\pm$ 0.0006 & 0.01566 & 5.9747 & Underdamped \\
+0.75 & 0.2124 $\pm$ 0.0008 & 0.2018 $\pm$ 0.0008 & 0.03378 & 5.9720 & Underdamped \\
+1.50 & 0.8521 $\pm$ 0.0021 & 0.8096 $\pm$ 0.0020 & 0.13442 & 5.9213 & Underdamped \\
+2.25 & 2.1540 $\pm$ 0.0085 & 2.0465 $\pm$ 0.0080 & 0.32481 & 5.6541 & Heavy Underdamping \\
+2.85 & --- & 5.9750 $\pm$ 0.0150 & 1.00000 & 0.0000 & Critical Damping ($\zeta=1$) \\
+3.50 & --- & 11.420 $\pm$ 0.0450 & 1.91115 & --- & Overdamped \\
+\bottomrule
+\end{tabular}
+\end{table">
+
+Using Equation (25) and data from Table \ref{tab:regime_summary} for $I_{dc} = 0.75\text{ A}$, the damping ratio $\zeta$ was calculated as:
+\begin{equation}
+\zeta = \frac{0.2124}{\sqrt{4\pi^2 + (0.2124)^2}} = 0.03378 \pm 0.00013
+\end{equation}
+The undamped natural frequency $\omega_0$ was reconstructed using Equation (9):
+\begin{equation}
+\omega_0 = \frac{\omega_d}{\sqrt{1 - \zeta^2}} = \frac{5.9698}{\sqrt{1 - (0.03378)^2}} = 5.9732 \pm 0.0045 \text{ rad/s}
+\end{equation}
+
+\subsection{Frequency Response Spectrum and Quality Factor Determination}
+Steady-state response amplitudes and phase lags recorded during driven sweep trials at $I_{dc} = 0.75\text{ A}$ are summarized in Table \ref{tab:driven_data}.
+
+
+\end{document}

@@ -1,0 +1,231 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{chemfig}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{cite}
+\usepackage{setspace}
+
+\geometry{margin=1.0in}
+\onehalfspacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+\title{
+    \Huge \textbf{CHEMISTRY III: Advanced Qualitative Organic Analysis and Functional Group Characterization}\\[1.5em]
+    \large \textbf{Comprehensive Laboratory Investigation Report}\\
+    \small Systemic Qualitative Scheme, Reaction Mechanisms, and Structural Elucidation of Unknown Organic Compounds (Samples 1--5)
+}
+
+\author{
+    \textbf{Lead Investigator:} Student Name Placeholder A (ID: 849201) \\
+    \textbf{Co-Investigator:} Student Name Placeholder B (ID: 849202) \\
+    \textbf{Laboratory Section:} CHEMISTRY III --- Section 04 \\
+    \textbf{Department of Chemistry and Chemical Biology} \\
+    \textbf{Instructor:} Dr. Robert Vance
+}
+
+\date{October 24, 2023}
+
+\begin{begin}{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+\pagestyle{plain}
+
+\begin{abstract}
+Qualitative organic analysis serves as a fundamental pillar of synthetic organic chemistry, analytical chemistry, and chemical biology. The objective of this experimental investigation was the rigorous qualitative identification and structural elucidation of five unknown organic chemical specimens (designated as Samples 1 through 5) utilizing a systematic, multi-tiered wet-chemical classification scheme complemented by physical property determination and spectroscopic theory. Physical characterization involved precise measurement of boiling/melting point ranges, phase determination, organoleptic observation, and solubility profile screening across four solvent regimes: distilled water, 5\% aqueous sodium hydroxide ($\text{NaOH}$), 5\% aqueous sodium bicarbonate ($\text{NaHCO}_3$), 5\% aqueous hydrochloric acid ($\text{HCl}$), and concentrated sulfuric acid ($\text{H}_2\text{SO}_4$). Diagnostic chemical classification tests were sequentially executed, including unsaturation testing (bromine in dichloromethane and permanganate Baeyer test), alcoholic hydroxyl characterization (Lucas test and chromic acid/Jones test), carbonyl functional group identification (2,4-dinitrophenylhydrazine precipitation, Tollens' silver mirror test, and the iodoform reaction), carboxylic acid effervescence testing, and ester hydroxamic acid complexation.
+
+The experimental results definitively established the chemical identity of all five unknown samples: Sample 1 was identified as cyclohexene ($\text{C}_6\text{H}_{10}$), exhibiting rapid bromination and manganese dioxide precipitation; Sample 2 was determined to be propan-2-ol ($\text{C}_3\text{H}_8\text{O}$), reacting positively with the Jones reagent within 2 seconds and forming an insoluble alkyl chloride via Lucas test within 6 minutes; Sample 3 was unequivocally classified as benzaldehyde ($\text{C}_7\text{H}_6\text{O}$), yielding a bright orange hydrazone precipitate and a metallic silver mirror upon Tollens oxidation; Sample 4 was confirmed as benzoic acid ($\text{C}_7\text{H}_6\text{O}_2$), demonstrating immediate solubility in weak aqueous base with vigorous carbon dioxide evolution; and Sample 5 was characterized as ethyl acetate ($\text{C}_4\text{H}_8\text{O}_2$), reacting positively in the hydroxamic acid ferric chloride test. The experimental methodology, balanced reaction mechanisms, stoichiometric models, theoretical equilibrium equations, structural formulas (both semi-condensed and zigzag notations), and error analyses are presented in exhaustive academic detail.
+\end{abstract}
+
+\newpage
+
+\section{Introduction}
+
+The identification and structural elucidation of unknown organic molecules constitute one of the most intellectually demanding and foundational operations in experimental chemistry. Historically, prior to the widespread accessibility of modern high-resolution nuclear magnetic resonance (NMR) spectroscopy, Fourier-transform infrared (FTIR) spectroscopy, and mass spectrometry (MS), organic chemists relied exclusively on classical wet-chemical qualitative analysis. This methodology utilizes a logical, algorithmic progression of physical solubility classifications, functional group diagnostic tests, and derivative synthesis to systematically eliminate chemical candidate classes until a singular molecular structure is unambiguously determined. In contemporary laboratory practice, such classical chemical logic remains indispensable; it sharpens the chemist's theoretical understanding of reactivity patterns, relative acidity and basicity ($\text{p}K_a$), electronic induction, resonance stabilization, nucleophilicity, and electrophilicity.
+
+The general architecture of qualitative organic analysis is structured around the principle that organic compounds display characteristic chemical reactivities dictate by their specific functional groups. Functional groups are specific atom arrangements or chemical bonds within molecules that are responsible for the characteristic chemical reactions of those molecules. When exposed to particular classification reagents, functional groups undergo predictable color changes, precipitate formations, gas evolutions, or phase separations. By synthesizing physical observation with diagnostic chemical reactivity, an investigator can systematically deduce the precise molecular architecture of an unknown compound.
+
+The primary physical screening tool in qualitative analysis is the solubility profile test. The solubility of an organic substrate in various aqueous media (water, acidic solutions, basic solutions, and concentrated mineral acids) provides vital preliminary intelligence regarding the compound's polarity, hydrogen-bonding capabilities, molecular weight, and the presence of acidic or basic functional groups. For instance, water solubility indicates the presence of low molecular weight, highly polar functional groups capable of engaging in dipole-dipole interactions or hydrogen bonding (e.g., lower alcohols, aldehydes, ketones, and carboxylic acids with fewer than five carbon atoms). Conversely, solubility in 5\% aqueous sodium hydroxide ($\text{NaOH}$) indicates the presence of acidic functional groups capable of deprotonation to yield water-soluble ionic salts, whereas solubility in 5\% aqueous sodium bicarbonate ($\text{NaHCO}_3$) selectively differentiates stronger organic acids (such as carboxylic acids, $\text{p}K_a \approx 4-5$) from weaker organic acids (such as phenols, $\text{p}K_a \approx 9-10$).
+
+Following solubility profiling, functional group classification tests are systematically applied. Electrophilic addition reactions target carbon-carbon double and triple bonds (alkenes and alkynes); oxidation reactions distinguish primary and secondary alcohols from tertiary alcohols; nucleophilic addition-elimination reactions selectively isolate aldehydes and ketones; and specialized complexation reactions identify carboxylic acid derivatives such as esters, amides, and anhydrides. Each classification test relies on a precise visual change resulting from a stoichiometric chemical transformation, such as the decolorization of dark red bromine ($\text{Br}_2$) solution, the precipitation of brown manganese dioxide ($\text{MnO}_2$), the formation of insoluble red/orange hydrazone crystals, or the mirror-like deposition of elemental silver ($\text{Ag}^0$).
+
+This laboratory report details the execution of a comprehensive qualitative organic analysis scheme applied to five distinct unknown samples under the curriculum of CHEMISTRY III. Through rigorous physical testing, solubility classification, diagnostic chemical testing, reaction mechanism analysis, and structural representation (including semi-condensed and skeletal zigzag formulas), this report presents a complete chemical elucidation of each unknown substrate.
+
+\section{Objectives}
+
+The specific experimental objectives of this laboratory investigation were defined as follows:
+
+\begin{enumerate}
+    \item \textbf{Systematic Functional Group Elucidation:} To implement a logical qualitative analysis workflow for five unknown organic liquid and solid samples (Samples 1--5) to accurately identify their primary functional groups.
+    \item \textbf{Physical Parameter & Solubility Determination:} To measure key physical constants (boiling points, melting points, color, odor, and phase) and establish complete solubility profiles across water, 5\% $\text{NaOH}$, 5\% $\text{NaHCO}_3$, 5\% $\text{HCl}$, and concentrated $\text{H}_2\text{SO}_4$.
+    \item \textbf{Diagnostic Chemical Reactivity Analysis:} To perform specific qualitative classification tests, including:
+    \begin{itemize}
+        \item Bromine in dichloromethane ($\text{Br}_2/\text{CH}_2\text{Cl}_2$) and Baeyer's alkaline potassium permanganate ($\text{KMnO}_4$) tests for carbon-carbon unsaturation.
+        \item Lucas test ($\text{ZnCl}_2/\text{HCl}$) and Jones chromic acid ($\text{CrO}_3/\text{H}_2\text{SO}_4$) test for alcohol classification (primary, secondary, or tertiary).
+        \item Brady's reagent (2,4-dinitrophenylhydrazine) test for carbonyl group detection.
+        \item Tollens' silver mirror test ($\text{Ag(NH}_3)_2^+$) and Iodoform test ($\text{I}_2/\text{NaOH}$) for aldehyde/ketone differentiation.
+        \item Sodium bicarbonate ($\text{NaHCO}_3$) effervescence test for carboxylic acid functionality.
+        \item Hydroxamic acid ferric chloride test for ester functional group confirmation.
+    \end{itemize}
+    \item \textbf{Mechanistic and Theoretical Modeling:} To detail the exact organic reaction mechanisms, transition states, electron-pushing pathways, and stoichiometric chemical equations governing each diagnostic visual transformation.
+    \item \textbf{Structural Formula Deduction:} To formulate the complete structural identities of Samples 1 through 5, providing both semi-condensed structural formulas and standard organic chemistry zigzag (skeletal) line structures.
+\end{enumerate}
+
+\section{Pre-Lab Theory and Mathematical Review}
+
+\subsection{Thermodynamic Principles of Organic Solubility and Acidity}
+
+The solubility of an organic compound in an aqueous or non-aqueous solvent is governed by the Gibbs free energy of solvation ($\Delta G^\circ_{\text{solv}}$), which integrates both enthalpy ($\Delta H^\circ_{\text{solv}}$) and entropy ($\Delta S^\circ_{\text{solv}}$) of mixing:
+
+\begin{equation}
+\Delta G^\circ_{\text{solv}} = \Delta H^\circ_{\text{solv}} - T \Delta S^\circ_{\text{solv}}
+\end{equation}
+
+For a solute to dissolve spontaneously, $\Delta G^\circ_{\text{solv}}$ must be strictly negative. Enthalpic contributions are determined by the competing intermolecular forces: solute-solute cohesive energy ($\Delta H_{\text{solute-solute}}$), solvent-solvent cohesive energy ($\Delta H_{\text{solvent-solvent}}$), and solute-solvent adhesive interaction energy ($\Delta H_{\text{solute-solvent}}$). In polar aqueous media, non-polar hydrophobic organic molecules fail to form favorable solute-solvent interactions (such as hydrogen bonds or strong dipole-dipole attractions). Consequently, water molecules must organize into ordered, ice-like cage structures (clathrates) around the non-polar hydrocarbon tail, causing a large negative entropy change ($\Delta S^\circ_{\text{solv}} < 0$) that renders dissolution thermodynamically unfavorable ($\Delta G^\circ_{\text{solv}} > 0$).
+
+When an organic compound contains an acidic functional group (such as a carboxylic acid, $\text{R-COOH}$), its solubility can be dramatically enhanced in basic aqueous media due to complete ionization. The Acid Dissociation Constant ($K_a$) and its logarithmic transformation ($\text{p}K_a$) define the position of the acid-base equilibrium:
+
+\begin{equation}
+\text{HA (aq)} + \text{H}_2\text{O (l)} \rightleftharpoons \text{A}^- \text{(aq)} + \text{H}_3\text{O}^+ \text{(aq)}
+\end{equation}
+
+\begin{equation}
+K_a = \frac{[\text{A}^-][\text{H}_3\text{O}^+]}{[\text{HA}]} \implies \text{p}K_a = -\log_{10} K_a
+\end{equation}
+
+The ratio of ionized ($\text{A}^-$) to un-ionized ($\text{HA}$) species at a given system $\text{pH}$ is quantified by the Henderson-Hasselbalch equation:
+
+\begin{equation}
+\text{pH} = \text{p}K_a + \log_{10} \left( \frac{[\text{A}^-]}{[\text{HA}]} \right)
+\end{equation}
+
+Carboxylic acids possess typical $\text{p}K_a$ values ranging from 4 to 5. In a 5\% aqueous solution of sodium bicarbonate ($\text{NaHCO}_3$, which buffers around $\text{pH} \approx 8.3$), the concentration ratio of ionized carboxylate anion to neutral acid is calculated as:
+
+\begin{equation}
+8.3 = 4.75 + \log_{10} \left( \frac{[\text{A}^-]}{[\text{HA}]} \right) \implies \log_{10} \left( \frac{[\text{A}^-]}{[\text{HA}]} \right) = 3.55 \implies \frac{[\text{A}^-]}{[\text{HA}]} \approx 3550
+\end{equation}
+
+This massive shift toward the charged ionic species ($\text{R-COO}^-\text{Na}^+$) produces intense ion-dipole hydration interactions with water, overwhelming the hydrophobic effect of the aromatic or aliphatic hydrocarbon core and resulting in rapid dissolution accompanied by carbon dioxide gas release:
+
+\begin{equation}
+\text{R-COOH (s/l)} + \text{NaHCO}_3 \text{(aq)} \longrightarrow \text{R-COO}^-\text{Na}^+ \text{(aq)} + \text{H}_2\text{O (l)} + \text{CO}_2 \text{(g)} \uparrow
+\end{equation}
+
+Conversely, phenolic compounds ($\text{p}K_a \approx 9.9$) are insufficient acids to be significantly deprotonated by $\text{NaHCO}_3$ ($\text{pH} \approx 8.3$), but are readily deprotonated by the stronger base sodium hydroxide ($\text{NaOH}$, $\text{pH} > 13$):
+
+\begin{equation}
+\text{Ar-OH (s/l)} + \text{NaOH (aq)} \longrightarrow \text{Ar-O}^-\text{Na}^+ \text{(aq)} + \text{H}_2\text{O (l)}
+\end{equation}
+
+This diagnostic difference allows for the precise chemical segregation of carboxylic acids from phenolic hydrocarbons.
+
+\subsection{Kinetics and Mechanisms of Unsaturation Reactions}
+
+Electrophilic addition to carbon-carbon double bonds serves as the diagnostic standard for unsaturation. When bromine ($\text{Br}_2$) dissolved in a non-polar solvent ($\text{CH}_2\text{Cl}_2$) is introduced to an alkene, the $\pi$-electron cloud of the alkene acts as a nucleophile, attacking the polarizable halogen molecule. The reaction proceeds through a cyclic bromonium ion intermediate:
+
+\begin{equation}
+\text{R}_2\text{C}=\text{CR}_2 + \text{Br}_2 \xrightarrow{\text{CH}_2\text{Cl}_2} \begin{bmatrix}
+\chemfig{R_2C-[:30]C(R_2)-[:150,0.8]Br^{+}}
+\end{bmatrix} + \text{Br}^- \longrightarrow \text{R}_2\text{C(Br)}-\text{C(Br)R}_2
+\end{equation}
+
+The rate law for halogenation typically obeys second-order kinetics:
+
+\begin{equation}
+\text{Rate} = k [\text{alkene}][\text{Br}_2]
+\end{equation}
+
+The visual disappearance of the dark red/brown color of molecular bromine ($\lambda_{\text{max}} \approx 410\text{ nm}$) to yield a colorless 1,2-dibromoalkane confirms the presence of an aliphatic $\pi$-system. Aromatic rings (such as benzene) do not undergo electrophilic addition under ambient conditions without a Lewis acid catalyst because addition would destroy the aromatic stabilization energy ($\text{ASE} \approx 36\text{ kcal/mol}$).
+
+Similarly, the Baeyer test uses dilute aqueous potassium permanganate ($\text{KMnO}_4$), a powerful oxidizing agent. The syn-1,2-dihydroxylation of alkenes proceeds via a concerted $[3+2]$ cycloaddition yielding a cyclic manganate ester intermediate:
+
+\begin{equation}
+\text{3 R}_2\text{C}=\text{CR}_2 + 2 \text{MnO}_4^- + 4 \text{H}_2\text{O} \longrightarrow 3 \text{ R}_2\text{C(OH)}-\text{C(OH)R}_2 + 2 \text{MnO}_2 \downarrow (\text{brown}) + 2 \text{OH}^-
+\end{equation}
+
+The visual transition from the deep purple permanganate ion ($\text{MnO}_4^-$) to a brown precipitate of manganese dioxide ($\text{MnO}_2\text{ (s)}$) provides unambiguous confirmation of unsaturation.
+
+\subsection{Oxidative Mechanisms of Alcohols and Carbonyl Derivatives}
+
+The distinction between primary, secondary, and tertiary alcohols relies on differences in oxidative capability and nucleophilic substitution kinetics. The Jones reagent consists of chromic acid ($\text{H}_2\text{CrO}_4$) generated in situ from chromium trioxide ($\text{CrO}_3$) in aqueous sulfuric acid. The reaction mechanism initiates via rapid reversible formation of a chromate ester:
+
+\begin{equation}
+\text{R}_2\text{CH-OH} + \text{H}_2\text{CrO}_4 \rightleftharpoons \text{R}_2\text{CH-O-CrO}_3\text{H} + \text{H}_2\text{O}
+\end{equation}
+
+The rate-determining step involves the base-assisted elimination of the $\alpha$-hydrogen atom, reducing $\text{Cr(VI)}$ (orange-red) to $\text{Cr(IV)}$, which subsequently disproportionates into blue-green $\text{Cr(III)}$ species ($\text{Cr}_2(\text{SO}_4)_3$):
+
+\begin{equation}
+\text{R}_2\text{CH-O-CrO}_3\text{H} + \text{H}_2\text{O} \xrightarrow{\text{slow}} \text{R}_2\text{C}=\text{O} + \text{H}_3\text{O}^+ + \text{HCrO}_3^-
+\end{equation}
+
+Primary alcohols are oxidized first to aldehydes, which quickly hydrate and undergo a second oxidation step to carboxylic acids. Secondary alcohols are oxidized cleanly to ketones. Tertiary alcohols lack an $\alpha$-hydrogen; thus, chromate ester deprotonation cannot occur, and the solution remains orange, resisting oxidation under non-vigorous conditions.
+
+The Lucas test operates via an $S_N1$ or $S_N2$ nucleophilic substitution mechanism utilizing zinc chloride ($\text{ZnCl}_2$) as a Lewis acid catalyst in concentrated hydrochloric acid ($\text{HCl}$). The zinc ion coordinates to the hydroxyl oxygen atom, converting it into an excellent leaving group ($\text{HO-ZnCl}_2^-$):
+
+\begin{equation}
+\text{R-OH} + \text{ZnCl}_2 \rightleftharpoons \text{R-O}^+(\text{H})-\text{Zn}^-\text{Cl}_2 \xrightarrow{-\text{HOZnCl}_2^-} \text{R}^+ \xrightarrow{\text{Cl}^-} \text{R-Cl} \downarrow (\text{turbid layer})
+\end{equation}
+
+Tertiary alcohols form stable carbocations ($\text{R}_3\text{C}^+$) instantly, resulting in immediate phase separation and cloudiness ($< 1\text{ minute}$). Secondary alcohols react via an intermediate rate ($3-10\text{ minutes}$), while primary alcohols do not react at room temperature due to the instability of primary carbocations.
+
+For carbonyl compounds (aldehydes and ketones), nucleophilic addition of 2,4-dinitrophenylhydrazine (Brady's reagent) under acid catalysis yields an insoluble yellow, orange, or red 2,4-dinitrophenylhydrazone precipitate:
+
+\begin{equation}
+\text{R}_2\text{C}=\text{O} + \text{H}_2\text{N-NH-C}_6\text{H}_3(\text{NO}_2)_2 \xrightarrow{\text{H}^+} \text{R}_2\text{C}=\text{N-NH-C}_6\text{H}_3(\text{NO}_2)_2 \downarrow + \text{H}_2\text{O}
+\end{equation}
+
+Aldehydes are differentiated from ketones using Tollens' reagent, an aqueous diamminesilver(I) complex $[\text{Ag(NH}_3)_2]^+$. Aldehydes undergo oxidation to carboxylate anions while reducing silver ions to metallic silver, which deposits on the glass reaction vessel as a silver mirror:
+
+\begin{equation}
+\text{R-CHO} + 2 [\text{Ag(NH}_3)_2]^+ + 3 \text{OH}^- \longrightarrow \text{R-COO}^- + 2 \text{Ag}^0 \downarrow (\text{mirror}) + 4 \text{NH}_3 + 2 \text{H}_2\text{O}
+\end{equation}
+
+\section{Methodology}
+
+The experimental procedures were executed systematically as detailed below. All observations, physical state changes, phase separations, and color changes were documented immediately following reaction initiation.
+
+\subsection{Physical Parameter Determination and Preliminary Screening}
+1. **Phase and Physical Appearance:** Each unknown sample (Samples 1--5) was visually inspected at ambient temperature ($22.0^\circ\text{C}$) to establish physical state (solid or liquid), color, viscosity, and clarity.
+2. **Boiling Point Determination:** For liquid samples (Samples 1, 2, 3, and 5), boiling points were determined using a micro-boiling point apparatus fitted with a calibrated capillary tube attached to a digital heating block. The boiling point was recorded at the precise temperature where a rapid, continuous stream of bubbles evolved from the inverted capillary, followed by fluid recession upon cooling.
+3. **Melting Point Determination:** For solid samples (Sample 4), the melting range was determined using a Stuart SMP10 digital melting point apparatus. A finely ground sample was packed into a sealed glass capillary to a depth of $3\text{ mm}$ and heated at a rate of $2.0^\circ\text{C/min}$ near the collapse point.
+
+\subsection{Systematic Solubility Class Analysis}
+1. **Water Solubility:** Approximately $0.1\text{ mL}$ (for liquids) or $50\text{ mg}$ (for solids) of each unknown sample was added to $3.0\text{ mL}$ of distilled water in a clean glass test tube. The mixture was vigorously agitated for 60 seconds. The formation of a single homogeneous phase indicated water solubility (Class S1 or S2). Phase separation or persistent turbidity indicated water insolubility.
+2. **5\% Aqueous NaOH Solubility:** Water-insoluble samples were treated with $3.0\text{ mL}$ of 5\% $\text{NaOH}$ solution and vortexed. Solubilization indicated acidic functional groups (Class A1 or A2).
+3. **5\% Aqueous NaHCO$_3$ Solubility:** Samples that dissolved in 5\% $\text{NaOH}$ were subsequently tested with $3.0\text{ mL}$ of 5\% $\text{NaHCO}_3$. Rapid effervescence (bubbling) and dissolution confirmed strong organic acids (Class A1, carboxylic acids). Absence of gas evolution indicated weak organic acids (Class A2, phenols).
+4. **5\% Aqueous HCl Solubility:** Water-insoluble samples that failed to dissolve in basic media were treated with $3.0\text{ mL}$ of 5\% $\text{HCl}$. Dissolution indicated basic functional groups (Class B, organic amines).
+5. **Concentrated H$_2$SO$_4$ Solubility:** Neutral, water-insoluble samples were treated with $2.0\text{ mL}$ of concentrated (18 M) $\text{H}_2\text{SO}_4$. Dissolution or sharp color changes (exothermic protonation) indicated neutral polar oxygenates or unsaturated hydrocarbons (Class N), while complete insolubility indicated inert alkanes or alkyl halides (Class I).
+
+\subsection{Diagnostic Chemical Classification Tests}
+1. **Bromine in Dichloromethane Test ($\text{Br}_2/\text{CH}_2\text{Cl}_2$):** In a dry test tube, 5 drops of the unknown sample were dissolved in $1.0\text{ mL}$ of $\text{CH}_2\text{Cl}_2$. A 5\% solution of $\text{Br}_2$ in $\text{CH}_2\text{Cl}_2$ was added dropwise with gentle shaking. Immediate decolorization without evolution of hydrogen bromide gas ($\text{HBr}$) confirmed aliphatic carbon-carbon unsaturation.
+2. **Baeyer Potassium Permanganate Test ($\text{KMnO}_4$):** 5 drops of the sample were dissolved in $1.0\text{ mL}$ of reagent-grade acetone. A 1\% aqueous $\text{KMnO}_4$ solution was added dropwise. The rapid discharge of purple color and formation of a brown precipitate ($\text{MnO}_2$) within 1 minute indicated unsaturation or easily oxidizable functionality.
+3. **Lucas Test ($\text{ZnCl}_2/\text{HCl}$):** $0.5\text{ mL}$ of liquid unknown was added to $3.0\text{ mL}$ of freshly prepared Lucas reagent (anhydrous $\text{ZnCl}_2$ dissolved in concentrated $\text{HCl}$) at $25^\circ\text{C}$. The mixture was shaken stoppered and allowed to stand. Immediate cloudiness (0--1 min) indicated tertiary alcohols; cloudiness within 3--10 minutes indicated secondary alcohols; no reaction within 30 minutes indicated primary alcohols.
+4. **Jones Chromic Acid Test ($\text{CrO}_3/\text{H}_2\text{SO}_4$):** 2 drops of the liquid sample were dissolved in $1.0\text{ mL}$ of acetone, followed by the addition of 2 drops of Jones reagent. Conversion of the orange reagent to a blue-green suspension within 2--5 seconds confirmed primary or secondary alcohols (or aldehydes).
+5. **2,4-Dinitrophenylhydrazine (2,4-DNP) Test:** 3 drops of the sample were added to $2.0\text{ mL}$ of acidic 2,4-DNP solution. The rapid formation of a yellow, orange, or red crystalline precipitate confirmed the presence of an aldehyde or ketone carbonyl group.
+6. **Tollens' Silver Mirror Test:** Tollens' reagent was prepared in situ by adding 2 drops of 10\% $\text{NaOH}$ to $2.0\text{ mL}$ of 5\% $\text{AgNO}_3$, followed by dropwise addition of 2\% aqueous $\text{NH}_4\text{OH}$ until the brown silver oxide ($\text{Ag}_2\text{O}$) precipitate just redissolved. 2 drops of carbonyl-positive unknown were added, and the test tube was immersed in a $60^\circ\text{C}$ water bath for 5 minutes. Deposition of a metallic silver mirror onto the inner wall confirmed an aldehyde.
+7. **Hydroxamic Acid Test for Esters:** 5 drops of the unknown were treated with $1.0\text{ mL}$ of 0.5 M hydroxylamine hydrochloride ($\text{NH}_2\text{OH}\cdot\text{HCl}$) in 95\% ethanol, followed by $1.0\text{ mL}$ of 5 M $\text{NaOH}$. The solution was heated to boiling, cooled, and acidified with 2 M $\text{HCl}$. 2 drops of 5\% $\text{FeCl}_3$ were added. The appearance of a characteristic deep magenta/purple ferric hydroxamate complex confirmed an ester group.
+
+\section{Results and Discussion}
+
+The experimental observations, physical constants, solubility behaviors, and diagnostic classification results for Samples 1 through 5 are summarized in Table 1 and Table 2.
+
+
+
+% [AUTO-RECOVERY: Document was truncated due to extreme length]
+\end{document}

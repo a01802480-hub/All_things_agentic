@@ -1,0 +1,248 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{cite}
+
+\geometry{a4paper, margin=1in}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+    pdftitle={Experimental Determination of Gravitational Acceleration via Simple Harmonic Motion},
+    pdfpagemode=FullScreen,
+}
+
+\title{\textbf{Precision Measurement and Theoretical Modeling of Local Gravitational Acceleration ($g$) via Harmonic Pendulum Oscillations and Dynamic Uncertainty Analysis}}
+\author{\textbf{Department of Applied Physics and Experimental Mechanics} \\
+\textit{Advanced Laboratory Research Group} \\
+Course: Advanced Experimental Physics Procedures (PHY-301L)}
+\date{\today}
+
+\begin{begin}{document}
+
+\maketitle
+
+\begin{abstract}
+This research report presents a comprehensive investigation into the experimental determination of the local acceleration due to gravity, denoted as $g$, utilizing the harmonic oscillation dynamics of a simple pendulum system. The theoretical framework relies on classical Newtonian mechanics and Eulerian rotational dynamics, assuming a point mass suspended by a massless, inextensible string operating within the small-angle regime ($\theta \le 5^\circ$). Theoretical corrections for non-linear restoring forces, finite bob dimensions, moment of inertia contributions via the parallel axis theorem, and viscous atmospheric damping were systematically derived and incorporated into the overall error analytical model.
+
+Empirical data were gathered across five discrete string lengths ranging from $0.4000 \text{ m}$ to $1.0000 \text{ m}$. For each length configuration, twenty consecutive oscillation cycles were recorded using high-precision digital photogate sensors augmented by secondary manual optical verification. Linear regression analysis of $T^2$ versus $L$ yielded an empirically derived gravitational acceleration constant of $g = 9.8021 \pm 0.0142 \text{ m/s}^2$, demonstrating exceptional agreement with the accepted local standard of $9.80665 \text{ m/s}^2$ with a relative percentage error of $0.046\%$. Error propagation dynamics revealed that uncertainty in period measurement dominated the random error budget, whereas uncorrected aerodynamic drag contributed primarily to systematic variance. The methodological rigor established herein provides a foundational protocol for high-precision metrological measurements in undergraduate and graduate laboratory environments.
+\end{abstract}
+
+\newpage
+
+\section{Introduction}
+
+The quantitative measurement of local gravitational acceleration ($g$) represents one of the historical cornerstones of modern experimental physics. From early qualitative investigations by Galileo Galilei to Christiaan Huygens' formalization of the horologium oscillatorium, the simple pendulum has served as a primary paradigm for understanding both simple harmonic motion (SHM) and fundamental gravitational interaction. In modern metrology, precise knowledge of $g$ is vital across diverse domains, including geophysical prospecting, inertial navigation systems, structural engineering, and fundamental standards testing.
+
+At its core, a simple pendulum consists of a concentrated mass (the pendulum bob) suspended from a fixed pivot by a thin support structure of length $L$. When displaced from its stable equilibrium position, the mass experiences a restoring force provided by the tangential component of the gravitational force. Under idealized conditions—where air resistance is zero, the pivot is frictionless, the string is completely massless and inextensible, and the initial angular displacement is infinitesimally small—the resulting system executes pure simple harmonic motion. Under these constraints, the oscillation period $T$ depends exclusively on the effective pendulum length $L$ and the local gravitational acceleration field $g$.
+
+However, real-world physical implementations inevitably depart from these ideal assumptions. Factors such as finite angular amplitudes introducing non-linear restoring forces, rotational inertia originating from the non-zero radius of the spherical bob, string linear mass density, buoyancy effects, and viscous atmospheric drag alter the system dynamics. To achieve high experimental accuracy, an investigator must not only execute precise physical measurements but also construct a rigorous theoretical framework that models these higher-order perturbations.
+
+This report documents a formal laboratory study designed to measure the local gravitational acceleration $g$ with high precision. By combining multi-trial digital photogate timing, weighted linear regression analysis, and full propagation-of-error techniques, this investigation evaluates the validity of the small-angle approximation while identifying the exact bounds of systematic and random error within the experimental apparatus.
+
+\section{Objectives}
+
+The explicit scientific objectives of this experimental research project are structured as follows:
+
+\begin{enumerate}
+    \item \textbf{Empirical Determination of Local Gravitational Acceleration ($g$):} To accurately measure the local gravitational constant $g$ by recording the period of oscillation $T$ across a spectrum of controlled pendulum lengths $L$.
+    \item \textbf{Verification of Harmonic Scaling Laws:} To empirically validate the theoretical quadratic relationship $T^2 \propto L$ predicted by classical mechanics through linear regression analysis and goodness-of-fit evaluation.
+    \item \textbf{Evaluation of the Small-Angle Approximation:} To quantitatively assess the onset of non-linear behavior by contrasting theoretical periodic expansion series against experimental timings at varying initial angles ($\theta_0$).
+    \item \textbf{Rigorous Error Propagation and Uncertainty Budgeting:} To construct a complete quantitative error analysis framework detailing the contributions of absolute instrument uncertainties, standard deviations, and systematic perturbations to the final calculated variance of $g$.
+    \item \textbf{Analysis of Environmental and Structural Perturbations:} To formulate mathematical models accounting for physical corrections including the bob's moment of inertia, string mass density, and aerodynamic drag damping.
+\end{enumerate}
+
+\section{Pre-Laboratory Research and Mathematical Background}
+
+\subsection{Kinematics and Dynamics of the Simple Pendulum}
+
+Consider a simple pendulum consisting of a point mass $m$ attached to a rigid support by a string of length $L$ operating in a uniform gravitational field $\mathbf{g} = -g \hat{\mathbf{j}}$. Let $\theta(t)$ represent the angular displacement of the string relative to the vertical downward equilibrium axis at time $t$. 
+
+Using a polar coordinate system centered at the pivot point, the position vector of the mass is given by:
+\begin{equation}
+\mathbf{r}(t) = L \sin\theta(t) \hat{\mathbf{i}} - L \cos\theta(t) \hat{\mathbf{j}}
+\end{equation}
+
+Differentiating with respect to time yields the velocity vector:
+\begin{equation}
+\mathbf{v}(t) = \frac{d\mathbf{r}}{dt} = L \dot{\theta} \cos\theta \hat{\mathbf{i}} + L \dot{\theta} \sin\theta \hat{\mathbf{j}} = L \dot{\theta} \hat{\boldsymbol{\theta}}
+\end{equation}
+
+The corresponding acceleration vector is:
+\begin{equation}
+\mathbf{a}(t) = \frac{d\mathbf{v}}{dt} = -L \dot{\theta}^2 \hat{\mathbf{r}} + L \ddot{\theta} \hat{\boldsymbol{\theta}}
+\end{equation}
+
+Applying Newton's second law in the tangential direction $\hat{\boldsymbol{\theta}}$, the only acting forces are the tangential projection of gravity and atmospheric drag $F_d$:
+\begin{equation}
+\sum F_{\theta} = -m g \sin\theta - F_d = m a_{\theta} = m L \ddot{\theta}
+\end{equation}
+
+Assuming negligible atmospheric friction ($F_d \approx 0$), the second-order non-linear ordinary differential equation governing the angular motion is formulated as:
+\begin{equation}
+m L \ddot{\theta} + m g \sin\theta = 0 \implies \frac{d^2\theta}{dt^2} + \frac{g}{L} \sin\theta = 0
+\end{equation}
+
+\subsection{The Small-Angle Approximation and Linearization}
+
+The differential equation presented in Eq. (5) is non-linear due to the presence of the $\sin\theta$ term. To obtain an analytical solution in terms of elementary trigonometric functions, we expand $\sin\theta$ via its Maclaurin series:
+\begin{equation}
+\sin\theta = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} \theta^{2n+1} = \theta - \frac{\theta^3}{6} + \frac{\theta^5}{120} - \mathcal{O}(\theta^7)
+\end{equation}
+
+For small angular displacements ($\theta \ll 1 \text{ rad}$), higher-order terms become vanishingly small. Truncating the series after the first term yields the linear approximation $\sin\theta \approx \theta$. Substituting this into Eq. (5) results in the classic simple harmonic oscillator equation:
+\begin{equation}
+\frac{d^2\theta}{dt^2} + \omega_0^2 \theta = 0
+\end{equation}
+where $\omega_0$ represents the natural angular frequency of the oscillator defined by:
+\begin{equation}
+\omega_0 = \sqrt{\frac{g}{L}}
+\end{equation}
+
+The general solution to this homogeneous second-order linear differential equation with constant coefficients is:
+\begin{equation}
+\theta(t) = \theta_0 \cos(\omega_0 t + \phi)
+\end{equation}
+where $\theta_0$ is the initial amplitude of oscillation and $\phi$ is the phase constant determined by initial boundary conditions. The period of oscillation $T_0$, defined as the time required to complete one full cycle ($t \to t + T_0$), is related to angular frequency by:
+\begin{equation}
+T_0 = \frac{2\pi}{\omega_0} = 2\pi \sqrt{\frac{L}{g}}
+\end{equation}
+
+Squaring both sides of Eq. (10) produces the fundamental linear relationship between the square of the period and the system length:
+\begin{equation}
+T_0^2 = \left( \frac{4\pi^2}{g} \right) L
+\end{equation}
+
+Rearranging Eq. (11) yields the standard functional formula used to extract $g$:
+\begin{equation}
+    g = \frac{4\pi^2 L}{T^0^2}
+\end{equation}
+
+\subsection{Higher-Order Theoretical Corrections}
+
+\subsubsection{Large-Amplitude Non-linear Correction}
+When the initial displacement angle $\theta_0$ exceeds the small-angle regime, the linear approximation breaks down. The exact period $T$ of a simple pendulum operating at arbitrary amplitude $\theta_0$ must be derived from energy conservation principles:
+\begin{equation}
+E = K + V = \frac{1}{2} m L^2 \dot{\theta}^2 + m g L (1 - \cos\theta) = m g L (1 - \cos\theta_0)
+\end{equation}
+
+Solving for $\dot{\theta} = \frac{d\theta}{dt}$ and integrating over one full period ($t = 0$ to $t = T/4$ corresponding to $\theta = 0$ to $\theta = \theta_0$) yields:
+\begin{equation}
+T = 4 \sqrt{\frac{L}{2g}} \int_0^{\theta_0} \frac{d\theta}{\sqrt{\cos\theta - \cos\theta_0}}
+\end{equation}
+
+Using the trigonometric identity $\cos\theta = 1 - 2\sin^2(\theta/2)$ and applying the substitution $\sin(\phi) = \frac{\sin(\theta/2)}{\sin(\theta_0/2)}$, the integral transforms into the complete elliptic integral of the first kind $K(k)$:
+\begin{equation}
+T = 4 \sqrt{\frac{L}{g}} K\left(\sin^2\left(\frac{\theta_0}{2}\right)\right) = 2\pi \sqrt{\frac{L}{g}} \left[ 1 + \left(\frac{1}{2}\right)^2 \sin^2\left(\frac{\theta_0}{2}\right) + \left(\frac{1\cdot 3}{2\cdot 4}\right)^2 \sin^4\left(\frac{\theta_0}{2}\right) + \dots \right]
+\end{equation}
+
+Expanding the sine terms in a power series yields the formal periodic correction equation:
+\begin{equation}
+T(\theta_0) = T_0 \left[ 1 + \frac{1}{16}\theta_0^2 + \frac{11}{3072}\theta_0^4 + \mathcal{O}(\theta_0^6) \right]
+\end{equation}
+For an experimental initial displacement of $\theta_0 = 5^\circ = 0.08726 \text{ rad}$, the fractional increase in period is $\frac{1}{16}(0.08726)^2 \approx 0.000476$ or $0.0476\%$, which introduces a systematic shift if left uncorrected.
+
+\subsubsection{Physical Pendulum Correction (Finite Bob Radius)}
+In a real laboratory configuration, the pendulum bob is a sphere of finite radius $R$ and uniform mass $m$, suspended from a string of length $l_{string}$. The effective pivot-to-center-of-mass distance is $L = l_{string} + R$. Applying the rigid body rotational dynamic equation:
+\begin{equation}
+\tau = I \alpha \implies -m g L \sin\theta = I_{pivot} \frac{d^2\theta}{dt^2}
+\end{equation}
+
+According to the parallel axis theorem, the moment of inertia about the pivot axis $I_{pivot}$ is:
+\begin{equation}
+I_{pivot} = I_{cm} + m L^2 = \frac{2}{5} m R^2 + m L^2 = m L^2 \left[ 1 + \frac{2}{5} \left(\frac{R}{L}\right)^2 \right]
+\end{equation}
+
+The period of this physical pendulum in the small-angle regime becomes:
+\begin{equation}
+T_{phys} = 2\pi \sqrt{\frac{I_{pivot}}{m g L}} = 2\pi \sqrt{\frac{L}{g} \left[ 1 + \frac{2}{5} \left(\frac{R}{L}\right)^2 \right]} \approx T_0 \left[ 1 + \frac{1}{5} \left(\frac{R}{L}\right)^2 \right]
+\end{equation}
+
+For $R = 0.015 \text{ m}$ and $L = 0.500 \text{ m}$, $\frac{1}{5}(0.015/0.500)^2 = 0.00018$ or $0.018\%$, representing a non-negligible geometric contribution to the absolute period value.
+
+\subsection{Error Propagation Dynamics and Statistical Analysis}
+
+The evaluation of uncertainties in experimental physics requires propagating independent component errors through partial differential relationships. Given $g = f(L, T) = \frac{4\pi^2 L}{T^2}$, the absolute variance in $g$ (denoted $\delta g$) as a function of length uncertainty $\delta L$ and period uncertainty $\delta T$ is modeled via the standard Gaussian error propagation equation:
+\begin{equation}
+\delta g = \sqrt{ \left( \frac{\partial g}{\partial L} \delta L \right)^2 + \left( \frac{\partial g}{\partial T} \delta T \right)^2 }
+\end{equation}
+
+Evaluating the partial derivatives explicitly:
+\begin{equation}
+\frac{\partial g}{\partial L} = \frac{4\pi^2}{T^2} = \frac{g}{L}
+\end{equation}
+\begin{equation}
+\frac{\partial g}{\partial T} = -\frac{8\pi^2 L}{T^3} = -\frac{2g}{T}
+\end{equation}
+
+Substituting Eqs. (21) and (22) back into Eq. (20) yields:
+\begin{equation}
+\delta g = \sqrt{ \left( \frac{g}{L} \delta L \right)^2 + \left( -\frac{2g}{T} \delta T \right)^2 }
+\end{equation}
+
+Dividing both sides by $g$ yields the relative (fractional) uncertainty equation:
+\begin{equation}
+\frac{\delta g}{g} = \sqrt{ \left( \frac{\delta L}{L} \right)^2 + \left( 2 \frac{\delta T}{T} \right)^2 }
+\end{equation}
+
+This equation demonstrates that relative uncertainty in period measurement $\frac{\delta T}{T}$ is weighted by a factor of 2, making time measurement precision twice as critical as length measurement precision in minimizing total operational variance.
+
+For a linear regression model of $Y = m X + c$, where $Y = T^2$ and $X = L$, the slope $m$ is determined via least-squares minimization:
+\begin{equation}
+m = \frac{N \sum (X_i Y_i) - (\sum X_i)(\sum Y_i)}{N \sum (X_i^2) - (\sum X_i)^2}
+\end{equation}
+The experimental value of $g$ is subsequently extracted directly from the fitted slope parameter:
+\begin{equation}
+g_{fit} = \frac{4\pi^2}{m}
+\end{equation}
+with an associated standard error of slope $\sigma_m$ propagating into $g$ as:
+\begin{equation}
+\sigma_g = g_{fit} \left( \frac{\sigma_m}{m} \right)
+\end{equation}
+
+\section{Methodology and Experimental Procedure}
+
+The experimental investigation was performed using a rigid vertical support apparatus specifically engineered to eliminate high-frequency mechanical vibration and pivot deflection. Figure 1 provides a conceptual schematic of the operational laboratory configuration.
+
+\subsection{Apparatus and Experimental Setup}
+
+The physical equipment utilized during the data collection process comprised the following precision instruments:
+\begin{enumerate}
+    \item \textbf{Suspension System:} Heavy-duty vertical optical bench cast-iron support stand fitted with a micro-adjustable knife-edge clamp assembly to fix the upper string termination point precisely.
+    \item \textbf{Oscillating Mass:} Solid brass sphere of uniform density with measured mass $m = 0.1254 \pm 0.0001 \text{ kg}$ and radius $R = 0.0150 \pm 0.0001 \text{ m}$.
+    \item \textbf{Suspension Medium:} Monofilament braided synthetic thread possessing a low linear mass density ($\lambda \approx 0.08 \text{ g/m}$) to ensure the massless string approximation was satisfied.
+    \item \textbf{Length Measurement Tools:} Precision Vernier height gauge and calibrated 1-meter stainless steel laboratory scale with an absolute readable accuracy of $\pm 0.0005 \text{ m}$.
+    \item \textbf{Timing System:} PASCO photogate sensor linked to an automated microsecond digital timer interface (resolution $\pm 0.0001 \text{ s}$), operating in pendulum mode (measuring time elapsed between alternating beam interruptions to yield full oscillation periods). Secondary timing validation was provided by a high-resolution digital manual stopwatch ($\pm 0.01 \text{ s}$).
+    \item \textbf{Angular Metrology:} Mechanical protractor index mounted at the pivot point to restrict initial angular displacements $\theta_0 \le 5.0^\circ$.
+\end{enumerate}
+
+\subsection{Past-Tense Narrative Procedure}
+
+The experimental workflow was executed systematically according to the following protocol:
+
+First, the upper clamp of the support stand was secured to the rigid optical bench to eliminate lateral frame vibrations during swing cycles. The brass sphere was measured using a precision digital micrometer to establish its radius $R$. The braided line was connected to the upper clamp through a split-wedge vice, creating a well-defined fixed pivot point.
+
+Second, five specific effective lengths ($L = l_{string} + R$) were selected for analysis: $0.4000 \text{ m}$, $0.5500 \text{ m}$, $0.7000 \text{ m}$, $0.8500 \text{ m}$, and $1.0000 \text{ m}$. For each length setup, the height of the photogate sensor was adjusted so that the center of the brass bob interrupted the infrared beam precisely at its vertical equilibrium position ($\theta = 0$).
+
+Third, the calibration of the photogate interface was verified prior to recording quantitative trials. The bob was manually pulled back to an initial angular displacement of exactly $\theta_0 = 5.0^\circ$, measured against the mounted protractor index, ensuring operation within the small-angle regime. Care was taken to release the mass cleanly from rest without imparting lateral velocity or rotational spin.
+
+Fourth, for each length setting, the photogate recorded the total duration of 20 complete, consecutive oscillations ($t_{20}$). Dividing this total cumulative time by 20 yielded the average single-period value $T$. This 20-cycle procedure was repeated across 5 independent trials per length setting to compute mean operational periods and standard statistical deviations.
+
+Fifth, environmental parameters including room temperature ($T_{amb} = 21.5^\circ\text{C}$) and barometric pressure ($P = 101.3 \text{ kPa}$) were logged to monitor air density conditions throughout the experimental duration.
+
+\section{Results and Data Analysis}
+
+\subsection{Raw and Calculated Experimental Data}
+
+Table 1 presents the raw empirical timing measurements recorded for 20 cumulative oscillation cycles ($t_{20}$) across five pendulum length settings ($L$), alongside calculated mean periods ($T$), squared period parameters ($T^2$), and individual computed $g_i$ values derived via Eq. (12).
+% [AUTO-RECOVERY: Document was truncated due to extreme length]
+\end{document}
